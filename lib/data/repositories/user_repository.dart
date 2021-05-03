@@ -26,6 +26,11 @@ class UserRepository {
             ),
           );
 
+  Future<User?> logOut() async {
+    await firebaseAuth.signOut();
+    return firebaseAuth.currentUser;
+  }
+
   Future<bool> isSignedIn() async => firebaseAuth.currentUser != null;
 
   Future<User?> getUser() async => firebaseAuth.currentUser;

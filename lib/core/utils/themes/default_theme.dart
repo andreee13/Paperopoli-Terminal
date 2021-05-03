@@ -3,15 +3,23 @@ import 'package:flutter/material.dart';
 // ignore: non_constant_identifier_names
 final ThemeData DEFAULT_THEME = ThemeData(
   fontFamily: 'SFProDisplay',
-  accentColor: Colors.white10,
+  accentColor: Colors.blue,
   scaffoldBackgroundColor: Colors.white,
   iconTheme: IconThemeData(
     color: Colors.white,
   ),
   dialogTheme: DialogTheme(
-    titleTextStyle: TextStyle(
-      color: Colors.black,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(
+          15,
+        ),
+      ),
     ),
   ),
   visualDensity: VisualDensity.adaptivePlatformDensity,
+  appBarTheme: AppBarTheme(
+    color: Colors.white,
+    elevation: 1,
+  ),
 );

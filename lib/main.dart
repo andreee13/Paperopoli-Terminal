@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'core/errors/exceptions.dart';
 import 'core/utils/themes/default_theme.dart';
 import 'cubits/authentication/authentication_cubit.dart';
 import 'data/repositories/user_repository.dart';
 import 'presentation/screens/home_screen.dart';
+import 'presentation/screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,21 +56,33 @@ Future<void> _initializeDeviceProperties() async {
   );
 }
 
-class AppBootstrapper extends StatelessWidget {
+class AppBootstrapper extends StatefulWidget {
+  @override
+  _AppBootstrapperState createState() => _AppBootstrapperState();
+}
+
+class _AppBootstrapperState extends State<AppBootstrapper> {
+  @override
+  void initState() {
+    context.read<AuthenticationCubit>().login();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) => MaterialApp(
         theme: DEFAULT_THEME,
+        debugShowCheckedModeBanner: false,
         locale: Locale(
           'it',
           'IT',
         ),
         home: BlocBuilder<AuthenticationCubit, AuthenticationState>(
           builder: (context, state) {
-            if (state is AuthenticationError) {
-              throw CriticalException(
-                state.exception,
-              );
-            } else if (state is AuthenticationLoaded) {
+            print(state.runtimeType);
+            if (state is AuthenticationError ||
+                state is AuthenticationNotLogged) {
+              return LoginScreen();
+            } else if (state is AuthenticationLogged) {
               return HomeScreen();
             } else {
               return Center(

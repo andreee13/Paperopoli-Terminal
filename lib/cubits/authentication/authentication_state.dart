@@ -19,17 +19,24 @@ class AuthenticationLoading extends AuthenticationState {
   String toString() => 'Logging';
 }
 
-class AuthenticationLoaded extends AuthenticationState {
+class AuthenticationNotLogged extends AuthenticationState {
+  const AuthenticationNotLogged();
+
+  @override
+  String toString() => 'Not logged';
+}
+
+class AuthenticationLogged extends AuthenticationState {
   final User? user;
 
-  const AuthenticationLoaded(
+  const AuthenticationLogged(
     this.user,
   );
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is AuthenticationLoaded && o.user == user;
+    return o is AuthenticationLogged && o.user == user;
   }
 
   @override

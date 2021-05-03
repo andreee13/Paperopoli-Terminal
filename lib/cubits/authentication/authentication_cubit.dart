@@ -15,7 +15,53 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           AuthenticationInitial(),
         );
 
-  Future<void> login({
+  Future<void> login() async {
+    try {
+      emit(
+        AuthenticationLoading(),
+      );
+      if (await repository.isSignedIn()) {
+        emit(
+          AuthenticationLogged(
+            await repository.getUser(),
+          ),
+        );
+      } else {
+        emit(
+          AuthenticationNotLogged(),
+        );
+      }
+    } on AuthenticationException catch (e, _) {
+      emit(
+        AuthenticationError(e),
+      );
+    }
+  }
+
+  Future<void> logOut() async {
+    try {
+      emit(
+        AuthenticationLoading(),
+      );
+      if (await repository.logOut() != null) {
+        emit(
+          AuthenticationLogged(
+            await repository.getUser(),
+          ),
+        );
+      } else {
+        emit(
+          AuthenticationNotLogged(),
+        );
+      }
+    } on AuthenticationException catch (e, _) {
+      emit(
+        AuthenticationError(e),
+      );
+    }
+  }
+
+  Future<void> logInWithCredentials({
     required String email,
     required String password,
   }) async {
@@ -23,19 +69,24 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       emit(
         AuthenticationLoading(),
       );
-      emit(
-        AuthenticationLoaded(
-          await repository.isSignedIn()
-              ? await repository.getUser()
-              : await repository.signInWithEmailPassword(
-                  email: email,
-                  password: password,
-                ),
-        ),
-      );
+      if (await repository.signInWithEmailPassword(
+            email: email,
+            password: password,
+          ) !=
+          null) {
+        emit(
+          AuthenticationLogged(
+            await repository.getUser(),
+          ),
+        );
+      } else {
+        emit(
+          AuthenticationNotLogged(),
+        );
+      }
     } on AuthenticationException catch (e, _) {
       emit(
-        AuthenticationError(e),
+        AuthenticationNotLogged(),
       );
     }
   }
