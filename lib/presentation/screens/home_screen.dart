@@ -4,6 +4,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/cubits/authentication/authentication_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paperopoli_terminal/data/models/category_model.dart';
 import 'package:paperopoli_terminal/presentation/widgets/shipsWidget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Map<String, dynamic> _selectedCategory = CATEGORIES[0];
+  CategoryModel _selectedCategory = CATEGORIES[0];
 
   User _getUser() =>
       (context.read<AuthenticationCubit>().state as AuthenticationLogged).user!;
@@ -28,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _buildSeparator(_, 5),
                 ListTile(
                   title: Text(
-                    CATEGORIES[index]['name'],
+                    CATEGORIES[index].name,
                     style: TextStyle(
                       color: _selectedCategory == CATEGORIES[index]
                           ? Colors.white
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   leading: Icon(
-                    CATEGORIES[index]['icon'],
+                    CATEGORIES[index].mainIcon,
                     color: _selectedCategory == CATEGORIES[index]
                         ? Colors.red
                         : Colors.white54,
@@ -54,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           : ListTile(
               title: Text(
-                CATEGORIES[index]['name'],
+                CATEGORIES[index].name,
                 style: TextStyle(
                   color: _selectedCategory == CATEGORIES[index]
                       ? Colors.white
@@ -62,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               leading: Icon(
-                CATEGORIES[index]['icon'],
+                CATEGORIES[index].mainIcon,
                 color: _selectedCategory == CATEGORIES[index]
                     ? Colors.red
                     : Colors.white54,
@@ -100,13 +101,15 @@ class _HomeScreenState extends State<HomeScreen> {
           : SizedBox();
 
   Widget _buildMainWidget() {
-    switch (_selectedCategory['name']) {
+    switch (_selectedCategory.name) {
       case 'Dashboard':
         return Center();
       case 'Calendario':
         return Center();
       case 'Navi':
-        return ShipsWidget();
+        return ShipsWidget(
+          categoryModel: _selectedCategory,
+        );
       case 'Merci':
         return Center();
       case 'Veicoli':
@@ -119,6 +122,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Color(0xffE0E8F5),
+        floatingActionButton: CATEGORIES.indexOf(_selectedCategory) > 1
+            ? FloatingActionButton(
+                onPressed: () {},
+                child: Icon(
+                  Icons.add,
+                ),
+              )
+            : null,
         appBar: AppBar(
           title: Container(
             color: Color(0xffF44235),
@@ -129,14 +140,14 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.widgets,
+                Image.asset(
+                  'assets/images/ship_icon.png',
                 ),
                 SizedBox(
-                  width: 16,
+                  width: 8,
                 ),
                 Text(
-                  'Paperopoli Terminal'.toUpperCase(),
+                  'Paperopoli Terminal',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paperopoli_terminal/cubits/authentication/authentication_cubit.dart';
-import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

@@ -19,7 +19,7 @@ final ThemeData DEFAULT_THEME = ThemeData(
   ),
   visualDensity: VisualDensity.adaptivePlatformDensity,
   appBarTheme: AppBarTheme(
-    color: Colors.white,
+    color: Colors.red,
     elevation: 1,
   ),
 );
