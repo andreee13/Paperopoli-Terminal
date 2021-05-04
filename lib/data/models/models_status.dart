@@ -1,7 +1,7 @@
 enum ShipStatus {
+  docked,
   arriving,
   leaving,
-  docked,
 }
 
 enum GoodStatus {
@@ -13,4 +13,10 @@ enum GoodStatus {
 enum VehicleStatus {
   inside,
   outside,
+}
+
+enum PersonStatus {
+  onShip,
+  onGround,
+  onVehicle,
 }

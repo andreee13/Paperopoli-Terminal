@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paperopoli_terminal/cubits/authentication/authentication_cubit.dart';
 
@@ -11,7 +11,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool _loading = false;
+  bool _passwordVisible = false;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late TextEditingController _passwordResetController;
@@ -30,11 +30,20 @@ class _LoginScreenState extends State<LoginScreen> {
           color: Colors.black45,
         ),
         hintText: hintText,
-        suffixIcon: Icon(
-          icon,
-          color: Colors.black.withOpacity(0.7),
-          size: 20,
-        ),
+        suffixIcon: icon == Icons.email_outlined
+            ? Icon(
+                icon,
+                color: Colors.black.withOpacity(0.7),
+                size: 20,
+              )
+            : IconButton(
+                icon: Icon(
+                  icon,
+                ),
+                onPressed: () => setState(() {
+                  _passwordVisible = !_passwordVisible;
+                }),
+              ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(7),
@@ -67,36 +76,57 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: !_loading
-            ? AppBar(
-                title: Row(
+        floatingActionButton: FloatingActionButton(
+          child: Icon(
+            Icons.help_outline_outlined,
+            color: Colors.black,
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          hoverElevation: 0,
+          highlightElevation: 0,
+          onPressed: () {},
+        ),
+        body: Stack(
+          children: [
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 8,
+                  bottom: 8,
+                ),
+                child: Text(
+                  'Copyright © 2021 Andrea Checchin',
+                ),
+              ),
+            ),
+            SingleChildScrollView(
+              child: Center(
+                child: Column(
                   children: [
-                    Icon(
-                      Icons.widgets,
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 60,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/ship_icon_red.png',
+                            height: 200,
+                          ),
+                          Text(
+                            'Paperopoli Terminal',
+                            style: TextStyle(
+                              fontSize: 45,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Text(
-                      'Paperopoli Terminal',
-                    ),
-                  ],
-                ),
-              )
-            : null,
-        body: _loading
-            ? Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            : Stack(
-                children: [
-                  Center(
-                    child: ConstrainedBox(
+                    ConstrainedBox(
                       constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width / 3,
                         minHeight: MediaQuery.of(context).size.width / 4,
@@ -107,20 +137,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: const EdgeInsets.only(
                               right: 30,
                               left: 30,
-                              top: 50,
+                              top: 40,
                             ),
                             child: Center(
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Login',
-                                    style: TextStyle(
-                                      fontSize: 40,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
                                   Padding(
                                     padding: const EdgeInsets.only(
                                       top: 40,
@@ -136,14 +159,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                      bottom: 24,
+                                      bottom: 8,
                                     ),
                                     child: TextFormField(
                                       controller: _passwordController,
-                                      obscureText: true,
+                                      obscureText: !_passwordVisible,
                                       decoration: _getInputDecoration(
                                         'Password',
-                                        Ionicons.key_outline,
+                                        _passwordVisible
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
                                       ),
                                     ),
                                   ),
@@ -234,68 +259,66 @@ class _LoginScreenState extends State<LoginScreen> {
                                         'Forgot password?',
                                         style: TextStyle(
                                           fontWeight: FontWeight.w400,
+                                          color: Colors.green,
                                         ),
                                       ),
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 5,
+                                    height: 32,
                                   ),
-                                  MaterialButton(
-                                    onPressed: () async {
-                                      setState(() {
-                                        _loading = true;
-                                      });
-                                      try {
-                                        await context
-                                            .read<AuthenticationCubit>()
-                                            .logInWithCredentials(
-                                              email: _emailController.text,
-                                              password:
-                                                  _passwordController.text,
+                                  Center(
+                                    child: MaterialButton(
+                                      onPressed: () async {
+                                        try {
+                                          await context
+                                              .read<AuthenticationCubit>()
+                                              .logInWithCredentials(
+                                                email: _emailController.text,
+                                                password:
+                                                    _passwordController.text,
+                                              );
+                                          if (context
+                                                  .read<AuthenticationCubit>()
+                                                  .state
+                                              is AuthenticationNotLogged) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Incorrect email and/or password',
+                                                ),
+                                              ),
                                             );
-                                        if (context
-                                            .read<AuthenticationCubit>()
-                                            .state is AuthenticationNotLogged) {
-                                          setState(() {
-                                            _loading = false;
-                                          });
+                                          }
+                                        } catch (e) {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
                                               content: Text(
-                                                'Incorrect email and/or password',
+                                                'An error occured',
                                               ),
                                             ),
                                           );
                                         }
-                                      } catch (e) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'An error occured',
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    minWidth:
-                                        MediaQuery.of(context).size.height - 40,
-                                    height: 48,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
+                                      },
+                                      minWidth:
+                                          MediaQuery.of(context).size.width / 6,
+                                      height: 48,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
                                       ),
-                                    ),
-                                    color: Colors.blue.withOpacity(0.8),
-                                    elevation: 0,
-                                    highlightElevation: 0,
-                                    child: Text(
-                                      'Login',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 17,
+                                      color: Colors.blue.withOpacity(0.8),
+                                      elevation: 0,
+                                      highlightElevation: 0,
+                                      child: Text(
+                                        'Login',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 17,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -306,8 +329,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      height: 50,
+                    ),
+                  ],
+                ),
               ),
+            ),
+          ],
+        ),
       );
 }

@@ -12,7 +12,7 @@ final ThemeData DEFAULT_THEME = ThemeData(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(
-          15,
+          12,
         ),
       ),
     ),

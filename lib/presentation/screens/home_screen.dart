@@ -5,7 +5,11 @@ import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/cubits/authentication/authentication_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paperopoli_terminal/data/models/category_model.dart';
-import 'package:paperopoli_terminal/presentation/widgets/shipsWidget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/categories/goodsWidget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/categories/shipsWidget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/categories/vehiclesWidget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/views/calendarWidget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/views/dashboardWidget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -103,17 +107,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildMainWidget() {
     switch (_selectedCategory.name) {
       case 'Dashboard':
-        return Center();
-      case 'Calendario':
-        return Center();
+        return DashboardWidget();
+      case 'Programma':
+        return CalendarWidget();
       case 'Navi':
-        return ShipsWidget(
-          categoryModel: _selectedCategory,
-        );
+        return ShipsWidget();
       case 'Merci':
-        return Center();
+        return GoodsWidget();
       case 'Veicoli':
-        return Center();
+        return VehiclesWidget();
       default:
         return SizedBox();
     }
@@ -125,6 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButton: CATEGORIES.indexOf(_selectedCategory) > 1
             ? FloatingActionButton(
                 onPressed: () {},
+                //onPressed: () => _buildNewItemScreen(),
                 child: Icon(
                   Icons.add,
                 ),
@@ -137,22 +140,40 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(
               horizontal: 10,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/ship_icon.png',
+            child: MaterialButton(
+              hoverColor: Colors.black.withOpacity(
+                0.1,
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  10,
                 ),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  'Paperopoli Terminal',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+              ),
+              onPressed: () => setState(
+                () => _selectedCategory = CATEGORIES[0],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/ship_icon_white.png',
                   ),
-                ),
-              ],
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    'Paperopoli Terminal',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           actions: [
@@ -162,16 +183,56 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onPressed: () {}, //TODO
             ),
-            IconButton(
-              icon: Icon(
-                Ionicons.log_out_outline,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
               ),
-              onPressed: () async =>
-                  await context.read<AuthenticationCubit>().logOut(),
+              child: IconButton(
+                icon: Icon(
+                  Ionicons.power,
+                ),
+                onPressed: () async => await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text(
+                      'Logout',
+                    ),
+                    content: Text(
+                      'Vuoi davverro effetuare il logout?',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(
+                          context,
+                          false,
+                        ),
+                        child: Text(
+                          'Annulla',
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(
+                          context,
+                          true,
+                        ),
+                        child: Text(
+                          'Logout',
+                        ),
+                      ),
+                    ],
+                  ),
+                ).then(
+                  (value) async => value
+                      ? await context.read<AuthenticationCubit>().logOut()
+                      : {},
+                ),
+              ),
             ),
           ],
         ),
         body: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
           children: [
             Drawer(
               child: Stack(
