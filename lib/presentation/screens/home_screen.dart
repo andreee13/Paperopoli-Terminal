@@ -175,8 +175,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       top: 16,
                     ),
                     child: ListView.separated(
-                      separatorBuilder: _buildSeparator,
                       shrinkWrap: true,
+                      separatorBuilder: _buildSeparator,
                       itemBuilder: _buildCategories,
                       itemCount: CATEGORIES.length,
                     ),

@@ -1,22 +1,14 @@
-class FetchException implements Exception {
+class ServerException implements Exception {
   int? i;
   Exception? e;
 
-  FetchException([
+  ServerException([
     i,
     e,
   ]);
 
   @override
-  String toString() => 'FetchException: code $e';
-}
-
-class DatabaseException implements Exception {
-  final Exception e;
-
-  const DatabaseException(
-    this.e,
-  );
+  String toString() => 'ServerException: code $e';
 }
 
 class AuthenticationException implements Exception {
