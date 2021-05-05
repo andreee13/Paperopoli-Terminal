@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:paperopoli_terminal/core/utils/constants.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
+import 'package:paperopoli_terminal/cubits/ships/ships_cubit.dart';
 import 'package:paperopoli_terminal/data/models/models_status.dart';
 import 'package:paperopoli_terminal/data/models/ships_model.dart';
+import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
 
 class ShipsWidget extends StatefulWidget {
   @override
@@ -10,7 +13,17 @@ class ShipsWidget extends StatefulWidget {
 }
 
 class _ShipsWidgetState extends State<ShipsWidget> {
-  List<ShipModel> _ships = FAKE_SHIPS;
+  List<ShipModel> _ships = [];
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      context.read<ShipsCubit>().fetch(
+            user: HomeScreen.of(context)!.getUser(),
+          );
+    });
+  }
 
   _deleteShip(
     ShipModel shipModel,
@@ -225,70 +238,86 @@ class _ShipsWidgetState extends State<ShipsWidget> {
 
   @override
   Widget build(BuildContext context) => Expanded(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            32,
-            32,
-            32,
-            0,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Countup(
-                    begin: 0,
-                    end: _ships.length.toDouble(),
-                    curve: Curves.decelerate,
-                    duration: Duration(
-                      milliseconds: 300,
+        child: BlocBuilder<ShipsCubit, ShipsState>(
+          builder: (context, shipState) {
+            if (shipState is ShipsLoaded) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  32,
+                  32,
+                  32,
+                  0,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Countup(
+                          begin: 0,
+                          end: _ships.length.toDouble(),
+                          curve: Curves.decelerate,
+                          duration: Duration(
+                            milliseconds: 300,
+                          ),
+                          style: TextStyle(
+                            fontSize: 45,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                          ),
+                          child: Text(
+                            'Navi',
+                            style: TextStyle(
+                              fontSize: 45,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    style: TextStyle(
-                      fontSize: 45,
-                      fontWeight: FontWeight.bold,
+                    SizedBox(
+                      height: 32,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                    ),
-                    child: Text(
-                      'Navi',
-                      style: TextStyle(
-                        fontSize: 45,
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: ShipStatus.values
+                                  .map(
+                                    (status) => _buildStatusView(
+                                      status,
+                                    ),
+                                  )
+                                  .toList() +
+                              [
+                                SizedBox(
+                                  height: 64,
+                                ),
+                              ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 32,
-              ),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: ShipStatus.values
-                            .map(
-                              (status) => _buildStatusView(
-                                status,
-                              ),
-                            )
-                            .toList() +
-                        [
-                          SizedBox(
-                            height: 64,
-                          ),
-                        ],
-                  ),
+                  ],
                 ),
-              ),
-            ],
-          ),
+              );
+            } else if (shipState is ShipsError) {
+              return Center(
+                child: Text(
+                  'Si è verificato un errore\n${shipState.exception.toString()}',
+                ),
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
         ),
       );
 }

@@ -1,20 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 import 'package:paperopoli_terminal/core/errors/exceptions.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/data/models/good_model.dart';
 
 class GoodsRepository {
-  final User user;
-
-  GoodsRepository({
-    required this.user,
-  });
-
-  Future<List<GoodModel>> fetch() async => await http.get(
+  Future<List<GoodModel>> fetch({
+    required User user,
+  }) async =>
+      await http.get(
         Uri.parse(
           SERVER_URL,
         ),
@@ -37,6 +34,7 @@ class GoodsRepository {
 
   Future<void> delete({
     required int id,
+    required User user,
   }) async =>
       http.delete(
         Uri.parse(
@@ -54,6 +52,7 @@ class GoodsRepository {
 
   Future<void> edit({
     required GoodModel goodModel,
+    required User user,
   }) async =>
       http.patch(
         Uri.parse(
@@ -71,6 +70,7 @@ class GoodsRepository {
 
   Future<GoodModel> create({
     required GoodModel goodModel,
+    required User user,
   }) async =>
       http.post(
         Uri.parse(

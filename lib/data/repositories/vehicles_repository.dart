@@ -8,13 +8,10 @@ import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/data/models/vehicle_model.dart';
 
 class VehiclesRepository {
-  final User user;
-
-  VehiclesRepository({
-    required this.user,
-  });
-
-  Future<List<VehicleModel>> fetch() async => await http.get(
+  Future<List<VehicleModel>> fetch({
+    required User user,
+  }) async =>
+      await http.get(
         Uri.parse(
           SERVER_URL,
         ),
@@ -37,6 +34,7 @@ class VehiclesRepository {
 
   Future<void> delete({
     required int id,
+    required User user,
   }) async =>
       http.delete(
         Uri.parse(
@@ -54,6 +52,7 @@ class VehiclesRepository {
 
   Future<void> edit({
     required VehicleModel vehicleModel,
+    required User user,
   }) async =>
       http.patch(
         Uri.parse(
@@ -71,6 +70,7 @@ class VehiclesRepository {
 
   Future<VehicleModel> create({
     required VehicleModel vehicleModel,
+    required User user,
   }) async =>
       http.post(
         Uri.parse(

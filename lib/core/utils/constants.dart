@@ -14,7 +14,7 @@ final bool IS_MOBILE_ON_WEB = kIsWeb &&
     (defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS);
 
-const String SERVER_URL = 'http://192.168.0.20';
+const String SERVER_URL = 'http://192.168.0.3/paperopoli_terminal';
 
 const String OPEN_WEATHER_API_KEY = '3fad3e73d27847a54f8ba8da4f5c8112';
 

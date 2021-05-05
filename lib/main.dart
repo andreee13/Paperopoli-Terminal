@@ -7,6 +7,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paperopoli_terminal/cubits/goods/goods_cubit.dart';
+import 'package:paperopoli_terminal/cubits/ships/ships_cubit.dart';
+import 'package:paperopoli_terminal/cubits/vehicles/vehicles_cubit.dart';
+import 'package:paperopoli_terminal/data/repositories/goods_repository.dart';
+import 'package:paperopoli_terminal/data/repositories/ships_repository.dart';
+import 'package:paperopoli_terminal/data/repositories/vehicles_repository.dart';
 
 import 'core/utils/themes/default_theme.dart';
 import 'cubits/authentication/authentication_cubit.dart';
@@ -29,6 +35,21 @@ void main() async {
                 repository: UserRepository(
                   firebaseAuth: FirebaseAuth.instance,
                 ),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => ShipsCubit(
+                repository: ShipsRepository(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => GoodsCubit(
+                repository: GoodsRepository(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => VehiclesCubit(
+                repository: VehiclesRepository(),
               ),
             ),
           ],

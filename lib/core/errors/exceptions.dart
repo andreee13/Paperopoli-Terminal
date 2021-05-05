@@ -1,5 +1,5 @@
 class ServerException implements Exception {
-  int? i;
+  dynamic? i;
   Exception? e;
 
   ServerException([
@@ -8,7 +8,7 @@ class ServerException implements Exception {
   ]);
 
   @override
-  String toString() => 'ServerException: code $e';
+  String toString() => 'ServerException: code $i, exception: $e';
 }
 
 class AuthenticationException implements Exception {

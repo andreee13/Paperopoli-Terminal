@@ -8,35 +8,36 @@ import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/data/models/ships_model.dart';
 
 class ShipsRepository {
-  final User user;
-
-  ShipsRepository({
-    required this.user,
-  });
-
-  Future<List<ShipModel>> fetch() async => await http.get(
+  Future<List<ShipModel>> fetch({
+    required User user,
+  }) async =>
+      await http.get(
         Uri.parse(
-          SERVER_URL,
+          '$SERVER_URL/ships/index',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
           HttpHeaders.contentTypeHeader: ContentType.json.value,
         },
-      ).then((response) {
-        if (response.statusCode == HttpStatus.ok ||
-            response.statusCode == HttpStatus.notModified) {
-          return jsonDecode(response.body)
-              .map(
-                (item) => ShipModel.fromJson(item),
-              )
-              .toList<ShipModel>();
-        } else {
-          throw new ServerException();
-        }
-      });
+      ).then(
+        (response) {
+          print(response.body);
+          if (response.statusCode == HttpStatus.ok ||
+              response.statusCode == HttpStatus.notModified) {
+            return jsonDecode(response.body)
+                .map(
+                  (item) => ShipModel.fromJson(item),
+                )
+                .toList<ShipModel>();
+          } else {
+            throw new ServerException();
+          }
+        },
+      );
 
   Future<void> delete({
     required int id,
+    required User user,
   }) async =>
       http.delete(
         Uri.parse(
@@ -46,14 +47,17 @@ class ShipsRepository {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
           HttpHeaders.contentTypeHeader: ContentType.json.value,
         },
-      ).then((response) {
-        if (response.statusCode != HttpStatus.ok) {
-          throw new ServerException();
-        }
-      });
+      ).then(
+        (response) {
+          if (response.statusCode != HttpStatus.ok) {
+            throw new ServerException();
+          }
+        },
+      );
 
   Future<void> edit({
     required ShipModel shipModel,
+    required User user,
   }) async =>
       http.patch(
         Uri.parse(
@@ -63,14 +67,17 @@ class ShipsRepository {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
           HttpHeaders.contentTypeHeader: ContentType.json.value,
         },
-      ).then((response) {
-        if (response.statusCode != HttpStatus.ok) {
-          throw new ServerException();
-        }
-      });
+      ).then(
+        (response) {
+          if (response.statusCode != HttpStatus.ok) {
+            throw new ServerException();
+          }
+        },
+      );
 
   Future<ShipModel> create({
     required ShipModel shipModel,
+    required User user,
   }) async =>
       http.post(
         Uri.parse(
@@ -80,14 +87,16 @@ class ShipsRepository {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
           HttpHeaders.contentTypeHeader: ContentType.json.value,
         },
-      ).then((response) {
-        if (response.statusCode == HttpStatus.ok) {
-          return shipModel
-            ..id = int.parse(
-              response.body,
-            );
-        } else {
-          throw new ServerException();
-        }
-      });
+      ).then(
+        (response) {
+          if (response.statusCode == HttpStatus.ok) {
+            return shipModel
+              ..id = int.parse(
+                response.body,
+              );
+          } else {
+            throw new ServerException();
+          }
+        },
+      );
 }

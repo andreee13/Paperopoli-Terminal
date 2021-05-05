@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
+import 'package:paperopoli_terminal/core/utils/printWrapped.dart';
 import 'package:paperopoli_terminal/cubits/authentication/authentication_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paperopoli_terminal/data/models/category_model.dart';
@@ -14,12 +15,17 @@ import 'package:paperopoli_terminal/presentation/widgets/views/dashboardWidget.d
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
+
+  static _HomeScreenState? of(
+    BuildContext context,
+  ) =>
+      context.findAncestorStateOfType<_HomeScreenState>();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   CategoryModel _selectedCategory = CATEGORIES[0];
 
-  User _getUser() =>
+  User getUser() =>
       (context.read<AuthenticationCubit>().state as AuthenticationLogged).user!;
 
   Widget _buildCategories(
@@ -181,7 +187,11 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(
                 Icons.account_circle_outlined,
               ),
-              onPressed: () {}, //TODO
+              onPressed: () async {
+                printWrapped(
+                  await FirebaseAuth.instance.currentUser!.getIdToken(),
+                );
+              }, //TODO
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
