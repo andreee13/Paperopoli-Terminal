@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
 import 'package:paperopoli_terminal/cubits/goods/goods_cubit.dart';
 import 'package:paperopoli_terminal/data/models/good_model.dart';
@@ -13,7 +12,7 @@ class GoodsWidget extends StatefulWidget {
 }
 
 class _GoodsWidgetState extends State<GoodsWidget> {
-  List<GoodModel> _goods = FAKE_GOODS;
+  List<GoodModel> _goods = [];
 
   void _fetch() async => context.read<GoodsCubit>().fetch(
         user: HomeScreen.of(context)!.getUser(),

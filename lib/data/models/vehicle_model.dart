@@ -28,6 +28,8 @@ class VehicleModel {
         return 'Dentro';
       case VehicleStatus.outside:
         return 'Fuori';
+      case VehicleStatus.none:
+        return 'indefinito';
     }
   }
 }

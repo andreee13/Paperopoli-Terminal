@@ -179,40 +179,30 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context: context,
                                         builder: (context) => AlertDialog(
                                           title: Text(
-                                            'Password recovery',
+                                            'Recupero password',
                                           ),
                                           actions: [
                                             TextButton(
                                               child: Text(
-                                                'Close',
+                                                'Annulla',
                                               ),
                                               onPressed: () =>
                                                   Navigator.pop(context),
                                             ),
                                             TextButton(
                                               child: Text(
-                                                'Send',
+                                                'Invia',
                                               ),
                                               onPressed: () async {
+                                                Navigator.pop(context);
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(
                                                   SnackBar(
-                                                    backgroundColor:
-                                                        Colors.grey[200],
                                                     content: Text(
-                                                      'Recovery email sent',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                      textAlign:
-                                                          TextAlign.center,
+                                                      'Email inviata',
                                                     ),
                                                   ),
                                                 );
-                                                Navigator.pop(context);
                                                 await FirebaseAuth.instance
                                                     .sendPasswordResetEmail(
                                                   email:
@@ -226,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               Text(
-                                                'Insert your email address for password recovery.',
+                                                'Inserisci il tuo indirizzo email per recuperare la password',
                                               ),
                                               SizedBox(
                                                 height: 20,
@@ -247,8 +237,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                                       BorderRadius.all(
                                                     Radius.circular(10),
                                                   ),
-                                                  color: Theme.of(context)
-                                                      .backgroundColor,
                                                 ),
                                               ),
                                             ],
@@ -256,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                       ),
                                       child: Text(
-                                        'Forgot password?',
+                                        'Password dimenticata?',
                                         style: TextStyle(
                                           fontWeight: FontWeight.w400,
                                           color: Colors.green,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_annual_task/flutter_annual_task.dart';
-import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
 import 'package:paperopoli_terminal/data/models/ships_model.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -11,7 +10,7 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  final _ships = FAKE_SHIPS;
+  final List<ShipModel> _ships = [];
 
   @override
   Widget build(BuildContext context) => Expanded(
@@ -123,7 +122,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         _ships
                             .map(
                               (ship) => AnnualTaskItem(
-                                ship.expectedTime,
+                                ship.expectedArrivalTime,
                               ),
                             )
                             .toList(),
@@ -175,8 +174,8 @@ class OperationSource extends CalendarDataSource {
         .map(
           (e) => Operation(
             e.id.toString(),
-            e.expectedTime,
-            e.expectedTime,
+            e.expectedArrivalTime,
+            e.expectedArrivalTime,
             Colors.red,
             false,
           ),

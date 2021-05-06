@@ -5,7 +5,7 @@ import 'package:paperopoli_terminal/cubits/vehicles/vehicles_cubit.dart';
 import 'package:paperopoli_terminal/data/models/models_status.dart';
 import 'package:paperopoli_terminal/data/models/vehicle_model.dart';
 import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
-import 'flutter_bloc';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VehiclesWidget extends StatefulWidget {
   @override
@@ -235,7 +235,7 @@ class _VehiclesWidgetState extends State<VehiclesWidget> {
 
   @override
   Widget build(BuildContext context) => Expanded(
-        child: BlocBuilder<SubjectBloc, SubjectState>(
+        child: BlocBuilder<VehiclesCubit, VehiclesState>(
           builder: (context, vehicleState) {
             if (vehicleState is VehiclesLoaded) {
               return Padding(

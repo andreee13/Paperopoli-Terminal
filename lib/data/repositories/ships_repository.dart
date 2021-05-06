@@ -13,7 +13,7 @@ class ShipsRepository {
   }) async =>
       await http.get(
         Uri.parse(
-          '$SERVER_URL/ships/index',
+          '$TERMINAL_API_URL/ships/index',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -21,14 +21,18 @@ class ShipsRepository {
         },
       ).then(
         (response) {
-          print(response.body);
           if (response.statusCode == HttpStatus.ok ||
               response.statusCode == HttpStatus.notModified) {
-            return jsonDecode(response.body)
-                .map(
-                  (item) => ShipModel.fromJson(item),
+            print(response.body);
+            return jsonDecode(
+              response.body,
+            )
+                .map<ShipModel>(
+                  (item) => ShipModel.fromJson(
+                    item,
+                  ),
                 )
-                .toList<ShipModel>();
+                .toList();
           } else {
             throw new ServerException();
           }
@@ -41,7 +45,7 @@ class ShipsRepository {
   }) async =>
       http.delete(
         Uri.parse(
-          '$SERVER_URL/ships/delete/$id',
+          '$TERMINAL_API_URL/ships/delete/$id',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -61,7 +65,7 @@ class ShipsRepository {
   }) async =>
       http.patch(
         Uri.parse(
-          '$SERVER_URL/ships/edit/${shipModel.id}',
+          '$TERMINAL_API_URL/ships/edit/${shipModel.id}',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -81,7 +85,7 @@ class ShipsRepository {
   }) async =>
       http.post(
         Uri.parse(
-          '$SERVER_URL/ships/create',
+          '$TERMINAL_API_URL/ships/create',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),

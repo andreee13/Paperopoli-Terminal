@@ -27,6 +27,8 @@ class PersonModel {
         return 'A terra';
       case PersonStatus.onShip:
         return 'Su nave';
+      case PersonStatus.none:
+        return 'indefinito';
     }
   }
 }

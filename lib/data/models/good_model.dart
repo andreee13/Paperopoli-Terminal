@@ -30,6 +30,8 @@ class GoodModel {
         return 'A terra';
       case GoodStatus.onShip:
         return 'Su nave';
+      case GoodStatus.none:
+        return 'indefinito';
     }
   }
 }

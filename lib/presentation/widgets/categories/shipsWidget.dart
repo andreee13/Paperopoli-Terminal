@@ -13,8 +13,6 @@ class ShipsWidget extends StatefulWidget {
 }
 
 class _ShipsWidgetState extends State<ShipsWidget> {
-  List<ShipModel> _ships = [];
-
   @override
   void initState() {
     super.initState();
@@ -29,9 +27,10 @@ class _ShipsWidgetState extends State<ShipsWidget> {
 
   void _delete(
     ShipModel shipModel,
+    List<ShipModel> ships,
   ) {
     setState(() {
-      _ships.remove(
+      ships.remove(
         shipModel,
       );
     });
@@ -46,7 +45,11 @@ class _ShipsWidgetState extends State<ShipsWidget> {
     });
   }
 
-  Widget _itemBuilder(ShipModel shipModel) => Padding(
+  Widget _itemBuilder(
+    ShipModel shipModel,
+    List<ShipModel> ships,
+  ) =>
+      Padding(
         padding: EdgeInsets.fromLTRB(
           8,
           0,
@@ -55,7 +58,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.vertical(
-            top: _ships
+            top: ships
                         .where((element) => element.status == shipModel.status)
                         .first ==
                     shipModel
@@ -63,7 +66,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                     10,
                   )
                 : Radius.zero,
-            bottom: _ships
+            bottom: ships
                         .where((element) => element.status == shipModel.status)
                         .last ==
                     shipModel
@@ -94,7 +97,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                     width: 5,
                   ),
                   Text(
-                    '${shipModel.expectedTime.hour}:${shipModel.expectedTime.minute}',
+                    '${shipModel.expectedArrivalTime}:${shipModel.expectedArrivalTime.minute}',
                     style: TextStyle(
                       color: Colors.grey.shade600,
                     ),
@@ -105,6 +108,10 @@ class _ShipsWidgetState extends State<ShipsWidget> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: ShipStatus.values
+                      .where(
+                        (element) =>
+                            element != ShipStatus.values.last,
+                      )
                       .map(
                         (status) => MaterialButton(
                           elevation: 0,
@@ -176,6 +183,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                           (value) => value
                               ? _delete(
                                   shipModel,
+                                  ships,
                                 )
                               : {},
                         ),
@@ -189,9 +197,9 @@ class _ShipsWidgetState extends State<ShipsWidget> {
 
   Widget _buildStatusView(
     ShipStatus status,
+    List<ShipModel> ships,
   ) =>
-      _ships
-                  .where(
+      ships.where(
                     (element) => element.status == status,
                   )
                   .length >
@@ -211,7 +219,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                         ),
                         child: Text(
                           ShipModel.getStatusName(
-                            _ships
+                            ships
                                 .where(
                                   (element) => element.status == status,
                                 )
@@ -224,13 +232,14 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                         ),
                       ),
                     ] +
-                    _ships
+                    ships
                         .where(
                           (element) => element.status == status,
                         )
                         .map(
                           (ship) => _itemBuilder(
                             ship,
+                            ships,
                           ),
                         )
                         .toList(),
@@ -260,7 +269,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                       children: [
                         Countup(
                           begin: 0,
-                          end: _ships.length.toDouble(),
+                          end: shipState.ships.length.toDouble(),
                           curve: Curves.decelerate,
                           duration: Duration(
                             milliseconds: 300,
@@ -294,6 +303,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                                   .map(
                                     (status) => _buildStatusView(
                                       status,
+                                      shipState.ships,
                                     ),
                                   )
                                   .toList() +

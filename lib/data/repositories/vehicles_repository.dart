@@ -13,7 +13,7 @@ class VehiclesRepository {
   }) async =>
       await http.get(
         Uri.parse(
-          SERVER_URL,
+          TERMINAL_API_URL,
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -38,7 +38,7 @@ class VehiclesRepository {
   }) async =>
       http.delete(
         Uri.parse(
-          '$SERVER_URL/vehicles/delete/$id',
+          '$TERMINAL_API_URL/vehicles/delete/$id',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -56,7 +56,7 @@ class VehiclesRepository {
   }) async =>
       http.patch(
         Uri.parse(
-          '$SERVER_URL/vehicles/edit/${vehicleModel.plate}',
+          '$TERMINAL_API_URL/vehicles/edit/${vehicleModel.plate}',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -74,7 +74,7 @@ class VehiclesRepository {
   }) async =>
       http.post(
         Uri.parse(
-          '$SERVER_URL/vehicles/create',
+          '$TERMINAL_API_URL/vehicles/create',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),

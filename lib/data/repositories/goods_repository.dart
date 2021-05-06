@@ -13,7 +13,7 @@ class GoodsRepository {
   }) async =>
       await http.get(
         Uri.parse(
-          SERVER_URL,
+          TERMINAL_API_URL,
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -38,7 +38,7 @@ class GoodsRepository {
   }) async =>
       http.delete(
         Uri.parse(
-          '$SERVER_URL/goods/delete/$id',
+          '$TERMINAL_API_URL/goods/delete/$id',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -56,7 +56,7 @@ class GoodsRepository {
   }) async =>
       http.patch(
         Uri.parse(
-          '$SERVER_URL/goods/edit/${goodModel.id}',
+          '$TERMINAL_API_URL/goods/edit/${goodModel.id}',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -74,7 +74,7 @@ class GoodsRepository {
   }) async =>
       http.post(
         Uri.parse(
-          '$SERVER_URL/goods/create',
+          '$TERMINAL_API_URL/goods/create',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
