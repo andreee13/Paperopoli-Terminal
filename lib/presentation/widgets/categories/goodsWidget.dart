@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
+import 'package:paperopoli_terminal/cubits/goods/goods_cubit.dart';
 import 'package:paperopoli_terminal/data/models/good_model.dart';
 import 'package:paperopoli_terminal/data/models/models_status.dart';
+import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
 
 class GoodsWidget extends StatefulWidget {
   @override
@@ -12,7 +15,11 @@ class GoodsWidget extends StatefulWidget {
 class _GoodsWidgetState extends State<GoodsWidget> {
   List<GoodModel> _goods = FAKE_GOODS;
 
-  _deletegood(
+  void _fetch() async => context.read<GoodsCubit>().fetch(
+        user: HomeScreen.of(context)!.getUser(),
+      );
+
+  void _delete(
     GoodModel goodModel,
   ) {
     setState(() {
@@ -159,7 +166,7 @@ class _GoodsWidgetState extends State<GoodsWidget> {
                           ),
                         ).then(
                           (value) => value
-                              ? _deletegood(
+                              ? _delete(
                                   goodModel,
                                 )
                               : {},
@@ -225,70 +232,102 @@ class _GoodsWidgetState extends State<GoodsWidget> {
 
   @override
   Widget build(BuildContext context) => Expanded(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            32,
-            32,
-            32,
-            0,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Countup(
-                    begin: 0,
-                    end: _goods.length.toDouble(),
-                    curve: Curves.decelerate,
-                    duration: Duration(
-                      milliseconds: 300,
+        child: BlocBuilder<GoodsCubit, GoodsState>(
+          builder: (context, goodState) {
+            if (goodState is GoodsLoaded) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  32,
+                  32,
+                  32,
+                  0,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Countup(
+                          begin: 0,
+                          end: _goods.length.toDouble(),
+                          curve: Curves.decelerate,
+                          duration: Duration(
+                            milliseconds: 300,
+                          ),
+                          style: TextStyle(
+                            fontSize: 45,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                          ),
+                          child: Text(
+                            'Merci',
+                            style: TextStyle(
+                              fontSize: 45,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    style: TextStyle(
-                      fontSize: 45,
-                      fontWeight: FontWeight.bold,
+                    SizedBox(
+                      height: 32,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                    ),
-                    child: Text(
-                      'Merci',
-                      style: TextStyle(
-                        fontSize: 45,
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: GoodStatus.values
+                                  .map(
+                                    (status) => _buildStatusView(
+                                      status,
+                                    ),
+                                  )
+                                  .toList() +
+                              [
+                                SizedBox(
+                                  height: 64,
+                                ),
+                              ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 32,
-              ),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: GoodStatus.values
-                            .map(
-                              (status) => _buildStatusView(
-                                status,
-                              ),
-                            )
-                            .toList() +
-                        [
-                          SizedBox(
-                            height: 64,
-                          ),
-                        ],
-                  ),
+                  ],
                 ),
-              ),
-            ],
-          ),
+              );
+            } else if (goodState is GoodsError) {
+              return Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Si è verificato un errore',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                      ),
+                      child: TextButton(
+                        onPressed: () => _fetch(),
+                        child: Text(
+                          'Riprova',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
         ),
       );
 }

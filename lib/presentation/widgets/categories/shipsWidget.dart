@@ -18,14 +18,16 @@ class _ShipsWidgetState extends State<ShipsWidget> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-      context.read<ShipsCubit>().fetch(
-            user: HomeScreen.of(context)!.getUser(),
-          );
-    });
+    SchedulerBinding.instance!.addPostFrameCallback(
+      (timeStamp) => _fetch(),
+    );
   }
 
-  _deleteShip(
+  void _fetch() async => context.read<ShipsCubit>().fetch(
+        user: HomeScreen.of(context)!.getUser(),
+      );
+
+  void _delete(
     ShipModel shipModel,
   ) {
     setState(() {
@@ -172,7 +174,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                           ),
                         ).then(
                           (value) => value
-                              ? _deleteShip(
+                              ? _delete(
                                   shipModel,
                                 )
                               : {},
@@ -308,8 +310,24 @@ class _ShipsWidgetState extends State<ShipsWidget> {
               );
             } else if (shipState is ShipsError) {
               return Center(
-                child: Text(
-                  'Si è verificato un errore\n${shipState.exception.toString()}',
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Si è verificato un errore',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                      ),
+                      child: TextButton(
+                        onPressed: () => _fetch(),
+                        child: Text(
+                          'Riprova',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               );
             } else {

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
+import 'package:paperopoli_terminal/cubits/vehicles/vehicles_cubit.dart';
 import 'package:paperopoli_terminal/data/models/models_status.dart';
 import 'package:paperopoli_terminal/data/models/vehicle_model.dart';
+import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
+import 'flutter_bloc';
 
 class VehiclesWidget extends StatefulWidget {
   @override
@@ -11,6 +14,10 @@ class VehiclesWidget extends StatefulWidget {
 
 class _VehiclesWidgetState extends State<VehiclesWidget> {
   List<VehicleModel> _vehicles = FAKE_VEHICLES;
+
+  void _fetch() async => context.read<VehiclesCubit>().fetch(
+        user: HomeScreen.of(context)!.getUser(),
+      );
 
   _deletevehicle(
     VehicleModel vehicleModel,
@@ -228,70 +235,102 @@ class _VehiclesWidgetState extends State<VehiclesWidget> {
 
   @override
   Widget build(BuildContext context) => Expanded(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            32,
-            32,
-            32,
-            0,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Countup(
-                    begin: 0,
-                    end: _vehicles.length.toDouble(),
-                    curve: Curves.decelerate,
-                    duration: Duration(
-                      milliseconds: 300,
+        child: BlocBuilder<SubjectBloc, SubjectState>(
+          builder: (context, vehicleState) {
+            if (vehicleState is VehiclesLoaded) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  32,
+                  32,
+                  32,
+                  0,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Countup(
+                          begin: 0,
+                          end: _vehicles.length.toDouble(),
+                          curve: Curves.decelerate,
+                          duration: Duration(
+                            milliseconds: 300,
+                          ),
+                          style: TextStyle(
+                            fontSize: 45,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                          ),
+                          child: Text(
+                            'Veicoli',
+                            style: TextStyle(
+                              fontSize: 45,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    style: TextStyle(
-                      fontSize: 45,
-                      fontWeight: FontWeight.bold,
+                    SizedBox(
+                      height: 32,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                    ),
-                    child: Text(
-                      'Veicoli',
-                      style: TextStyle(
-                        fontSize: 45,
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: VehicleStatus.values
+                                  .map(
+                                    (status) => _buildStatusView(
+                                      status,
+                                    ),
+                                  )
+                                  .toList() +
+                              [
+                                SizedBox(
+                                  height: 64,
+                                ),
+                              ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 32,
-              ),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: VehicleStatus.values
-                            .map(
-                              (status) => _buildStatusView(
-                                status,
-                              ),
-                            )
-                            .toList() +
-                        [
-                          SizedBox(
-                            height: 64,
-                          ),
-                        ],
-                  ),
+                  ],
                 ),
-              ),
-            ],
-          ),
+              );
+            } else if (vehicleState is VehiclesError) {
+              return Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Si è verificato un errore',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                      ),
+                      child: TextButton(
+                        onPressed: () => _fetch(),
+                        child: Text(
+                          'Riprova',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
         ),
       );
 }
