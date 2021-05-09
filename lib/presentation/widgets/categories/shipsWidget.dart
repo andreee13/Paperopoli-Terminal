@@ -6,6 +6,7 @@ import 'package:paperopoli_terminal/cubits/ships/ships_cubit.dart';
 import 'package:paperopoli_terminal/data/models/models_status.dart';
 import 'package:paperopoli_terminal/data/models/ships_model.dart';
 import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
+import 'package:timelines/timelines.dart';
 
 class ShipsWidget extends StatefulWidget {
   @override
@@ -75,9 +76,13 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                   )
                 : Radius.zero,
           ),
-          child: ListTile(
-            tileColor: Colors.white,
-            minVerticalPadding: 20,
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(
+              vertical: 5,
+              horizontal: 16,
+            ),
+            backgroundColor: Colors.white,
+            collapsedBackgroundColor: Colors.white,
             title: Text(
               shipModel.id.toString(),
             ),
@@ -105,12 +110,82 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                 ],
               ),
             ),
-            trailing: Row(
+            children: [
+              SizedBox(
+                height: 80,
+                child: ListView(
+                  physics: BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    Timeline.tileBuilder(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                      ),
+                      theme: TimelineThemeData(
+                        nodePosition: 0,
+                        nodeItemOverlap: true,
+                        connectorTheme: ConnectorThemeData(
+                          color: Color(0xffe6e7e9),
+                          thickness: 15.0,
+                        ),
+                      ),
+                      builder: TimelineTileBuilder.connected(
+                        indicatorBuilder: (context, curr_index) {
+                          return OutlinedDotIndicator(
+                            color: shipModel.status == ShipStatus.docked
+                                ? Color(0xff6ad192)
+                                : Color(0xffe6e7e9),
+                            backgroundColor:
+                                shipModel.status == ShipStatus.docked
+                                    ? Color(0xffd4f5d6)
+                                    : Color(0xffc2c5c9),
+                            borderWidth: shipModel.status == ShipStatus.docked
+                                ? 3.0
+                                : 2.5,
+                          );
+                        },
+                        /*connectorBuilder: (context, index, connectorType) {
+                          var color;
+                          if (index + 1 < data.length - 1 &&
+                              data[index].isInProgress &&
+                              data[index + 1].isInProgress) {
+                            color = data[index].isInProgress
+                                ? Color(0xff6ad192)
+                                : null;
+                          }
+                          return SolidLineConnector(
+                            color: color,
+                          );
+                        },
+                        contentsBuilder: (context, index) {
+                          var height;
+                          if (index + 1 < data.length - 1 &&
+                              data[index].isInProgress &&
+                              data[index + 1].isInProgress) {
+                            height = kTileHeight - 10;
+                          } else {
+                            height = kTileHeight + 5;
+                          }
+                          return SizedBox(
+                            height: height,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(),
+                            ),
+                          );
+                        },*/
+                        itemCount: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            /*trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: ShipStatus.values
                       .where(
-                        (element) =>
-                            element != ShipStatus.values.last,
+                        (element) => element != ShipStatus.values.last,
                       )
                       .map(
                         (status) => MaterialButton(
@@ -191,6 +266,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                     ),
                   ],
             ),
+            */
           ),
         ),
       );
@@ -199,7 +275,8 @@ class _ShipsWidgetState extends State<ShipsWidget> {
     ShipStatus status,
     List<ShipModel> ships,
   ) =>
-      ships.where(
+      ships
+                  .where(
                     (element) => element.status == status,
                   )
                   .length >
