@@ -24,3 +24,10 @@ enum PersonStatus {
   onVehicle,
   none,
 }
+
+enum OperationStatus {
+  working,
+  waiting,
+  done,
+  none,
+}

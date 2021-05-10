@@ -11,6 +11,7 @@ import 'package:paperopoli_terminal/presentation/widgets/categories/shipsWidget.
 import 'package:paperopoli_terminal/presentation/widgets/categories/vehiclesWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/views/calendarWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/views/dashboardWidget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/views/operationsWidget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -116,6 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
         return DashboardWidget();
       case 'Programma':
         return CalendarWidget();
+      case 'Operazioni':
+        return OperationsWidget();
       case 'Navi':
         return ShipsWidget();
       case 'Merci':

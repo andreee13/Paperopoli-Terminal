@@ -118,42 +118,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       padding: const EdgeInsets.only(
                         left: 8,
                       ),
-                      child: AnnualTaskView(
-                        _ships
-                            .map(
-                              (ship) => AnnualTaskItem(
-                                ship.expectedArrivalTime,
-                              ),
-                            )
-                            .toList(),
-                        year: DateTime.now().year,
-                        labelStyle: TextStyle(
-                          fontSize: 13,
-                        ),
-                        weekDayLabels: [
-                          'Domenica',
-                          'Lunedì',
-                          'Martedì',
-                          'Mercoledì',
-                          'Giovedì',
-                          'Venerdì',
-                          'Sabato',
-                        ],
-                        monthLabels: [
-                          'Gennaio',
-                          'Febbraio',
-                          'Marzo',
-                          'Aprile',
-                          'Maggio',
-                          'Giugno',
-                          'Luglio',
-                          'Agosto',
-                          'Settembre',
-                          'Ottobre',
-                          'Novembre',
-                          'Dicembre',
-                        ],
-                        activateColor: Colors.red,
+                      child: Text(
+                        'Coming soon...',
                       ),
                     ),
                     SizedBox(

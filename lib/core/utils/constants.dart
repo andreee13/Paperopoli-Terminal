@@ -28,6 +28,11 @@ const List<CategoryModel> CATEGORIES = [
     icons: [],
   ),
   CategoryModel(
+    name: 'Operazioni',
+    mainIcon: Icons.construction,
+    icons: [],
+  ),
+  CategoryModel(
     name: 'Navi',
     mainIcon: Icons.directions_boat,
     icons: [
