@@ -19,7 +19,7 @@ dependencies:
   firebase_core: ^1.0.3
   bloc: ^7.0.0
   flutter_bloc: ^7.0.0  
-  flutter_annual_task: ^0.2.0
+  # flutter_annual_task: ^0.2.0
   timelines: ^0.1.0
   syncfusion_flutter_calendar: ^19.1.59
 

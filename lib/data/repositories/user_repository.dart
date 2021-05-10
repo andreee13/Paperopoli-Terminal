@@ -8,6 +8,23 @@ class UserRepository {
     required this.firebaseAuth,
   });
 
+  Future<User?> signUpWithEmailPassword({
+    required String fullName,
+    required String email,
+    required String password,
+  }) async =>
+      await firebaseAuth
+          .createUserWithEmailAndPassword(
+            email: email,
+            password: password,
+          )
+          .then(
+            (userCredential) => userCredential.user!
+              ..updateProfile(
+                displayName: fullName,
+              ),
+          );
+
   Future<User?> signInWithEmailPassword({
     required String email,
     required String password,

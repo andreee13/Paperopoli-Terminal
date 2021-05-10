@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_annual_task/flutter_annual_task.dart';
 import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
 import 'package:paperopoli_terminal/data/models/ships_model.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';

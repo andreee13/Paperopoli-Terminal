@@ -61,6 +61,40 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     }
   }
 
+  Future<void> signUpWithCredentials({
+    required String email,
+    required String password,
+    required String fullName,
+  }) async {
+    try {
+      emit(
+        AuthenticationLoading(),
+      );
+      if (await repository.signUpWithEmailPassword(
+            email: email,
+            password: password,
+            fullName: fullName,
+          ) !=
+          null) {
+        emit(
+          AuthenticationLogged(
+            await repository.getUser(),
+          ),
+        );
+      } else {
+        emit(
+          AuthenticationNotLogged(),
+        );
+      }
+    } on AuthenticationException catch (e, _) {
+      emit(
+        AuthenticationError(
+          e,
+        ),
+      );
+    }
+  }
+
   Future<void> logInWithCredentials({
     required String email,
     required String password,
@@ -86,7 +120,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       }
     } on AuthenticationException catch (e, _) {
       emit(
-        AuthenticationNotLogged(),
+        AuthenticationError(
+          e,
+        ),
       );
     }
   }

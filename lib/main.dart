@@ -19,8 +19,8 @@ import 'package:paperopoli_terminal/data/repositories/vehicles_repository.dart';
 import 'core/utils/themes/default_theme.dart';
 import 'cubits/authentication/authentication_cubit.dart';
 import 'data/repositories/user_repository.dart';
+import 'presentation/screens/authentication_screen.dart';
 import 'presentation/screens/home_screen.dart';
-import 'presentation/screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -106,10 +106,9 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
         ),
         home: BlocBuilder<AuthenticationCubit, AuthenticationState>(
           builder: (context, state) {
-            print(state.runtimeType);
             if (state is AuthenticationError ||
                 state is AuthenticationNotLogged) {
-              return LoginScreen();
+              return AuthenticatonScreen();
             } else if (state is AuthenticationLogged) {
               return HomeScreen();
             } else {

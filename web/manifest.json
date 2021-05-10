@@ -1,11 +1,11 @@
 {
-    "name": "paperopoli_terminal",
-    "short_name": "paperopoli_terminal",
+    "name": "Paperopoli Terminal App",
+    "short_name": "Paperopoli Terminal",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FFFFFF",
+    "theme_color": "#F44235",
+    "description": "Applicaione terminal portuale di Paperopoli",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
