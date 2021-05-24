@@ -1,5 +1,5 @@
 class ServerException implements Exception {
-  dynamic? i;
+  dynamic i;
   Exception? e;
 
   ServerException([

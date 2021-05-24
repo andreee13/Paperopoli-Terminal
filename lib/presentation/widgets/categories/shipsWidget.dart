@@ -130,20 +130,17 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                         ),
                       ),
                       builder: TimelineTileBuilder.connected(
-                        indicatorBuilder: (context, curr_index) {
-                          return OutlinedDotIndicator(
-                            color: shipModel.status == ShipStatus.docked
-                                ? Color(0xff6ad192)
-                                : Color(0xffe6e7e9),
-                            backgroundColor:
-                                shipModel.status == ShipStatus.docked
-                                    ? Color(0xffd4f5d6)
-                                    : Color(0xffc2c5c9),
-                            borderWidth: shipModel.status == ShipStatus.docked
-                                ? 3.0
-                                : 2.5,
-                          );
-                        },
+                        indicatorBuilder: (context, currIndex) =>
+                            OutlinedDotIndicator(
+                          color: shipModel.status == ShipStatus.docked
+                              ? Color(0xff6ad192)
+                              : Color(0xffe6e7e9),
+                          backgroundColor: shipModel.status == ShipStatus.docked
+                              ? Color(0xffd4f5d6)
+                              : Color(0xffc2c5c9),
+                          borderWidth:
+                              shipModel.status == ShipStatus.docked ? 3.0 : 2.5,
+                        ),
                         /*connectorBuilder: (context, index, connectorType) {
                           var color;
                           if (index + 1 < data.length - 1 &&

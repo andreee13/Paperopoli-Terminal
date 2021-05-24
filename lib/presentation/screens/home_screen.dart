@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
-import 'package:paperopoli_terminal/core/utils/printWrapped.dart';
 import 'package:paperopoli_terminal/cubits/authentication/authentication_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paperopoli_terminal/data/models/category_model.dart';
@@ -44,14 +42,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       color: _selectedCategory == CATEGORIES[index]
                           ? Colors.white
-                          : Colors.white54,
+                          : Color(0xff909399),
                     ),
                   ),
                   leading: Icon(
                     CATEGORIES[index].mainIcon,
                     color: _selectedCategory == CATEGORIES[index]
-                        ? Colors.red
-                        : Colors.white54,
+                        ? Colors.white
+                        : Color(0xff909399),
                   ),
                   selected: _selectedCategory == CATEGORIES[index],
                   hoverColor: Colors.white10,
@@ -70,14 +68,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   color: _selectedCategory == CATEGORIES[index]
                       ? Colors.white
-                      : Colors.white54,
+                      : Color(0xff909399),
                 ),
               ),
               leading: Icon(
                 CATEGORIES[index].mainIcon,
                 color: _selectedCategory == CATEGORIES[index]
-                    ? Colors.red
-                    : Colors.white54,
+                    ? Colors.white
+                    : Color(0xff909399),
               ),
               selected: _selectedCategory == CATEGORIES[index],
               hoverColor: Colors.white10,
@@ -103,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text(
                 index == 1 ? 'Categorie' : 'Viste',
                 style: TextStyle(
-                  color: Colors.red,
+                  color: Colors.white60,
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                 ),
@@ -132,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Color(0xffE0E8F5),
+        backgroundColor: Colors.white,
         floatingActionButton: CATEGORIES.indexOf(_selectedCategory) > 1
             ? FloatingActionButton(
                 onPressed: () {},
@@ -142,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               )
             : null,
-        appBar: AppBar(
+        /*appBar: AppBar(
           title: Container(
             color: Color(0xffF44235),
             height: 40,
@@ -243,6 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+        */
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
@@ -252,13 +251,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   SizedBox.expand(
                     child: Material(
-                      color: Color(0xff1F2837),
+                      color: Color(0xff242342),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 16,
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Image.asset(
+                        'assets/images/ship_icon_white.png',
+                        height: 125,
+                        width: 125,
+                      ),
                     ),
+                  ),
+                  Center(
                     child: ListView.separated(
                       shrinkWrap: true,
                       separatorBuilder: _buildSeparator,
