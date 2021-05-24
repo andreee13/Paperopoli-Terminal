@@ -153,15 +153,12 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                                 ),
                                 actions: [
                                   TextButton(
+                                    onPressed: () => Navigator.pop(context),
                                     child: Text(
                                       'Annulla',
                                     ),
-                                    onPressed: () => Navigator.pop(context),
                                   ),
                                   TextButton(
-                                    child: Text(
-                                      'Invia',
-                                    ),
                                     onPressed: () async {
                                       Navigator.pop(context);
                                       ScaffoldMessenger.of(context)
@@ -177,6 +174,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                                         email: _passwordResetController.text,
                                       );
                                     },
+                                    child: Text(
+                                      'Invia',
+                                    ),
                                   ),
                                 ],
                                 content: Column(
@@ -189,17 +189,17 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                                       height: 20,
                                     ),
                                     Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
                                       child: TextFormField(
                                         controller: _passwordResetController,
                                         autofocus: true,
                                         decoration: _getInputDecoration(
                                           'Email',
                                           Icons.email_outlined,
-                                        ),
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
                                         ),
                                       ),
                                     ),

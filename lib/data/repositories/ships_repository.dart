@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paperopoli_terminal/core/errors/exceptions.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
-import 'package:paperopoli_terminal/data/models/ships_model.dart';
+import 'package:paperopoli_terminal/data/models/ship/ship_model.dart';
 
 class ShipsRepository {
   Future<List<ShipModel>> fetch({
@@ -34,7 +34,7 @@ class ShipsRepository {
                 )
                 .toList();
           } else {
-            throw new ServerException();
+            throw ServerException();
           }
         },
       );
@@ -54,7 +54,7 @@ class ShipsRepository {
       ).then(
         (response) {
           if (response.statusCode != HttpStatus.ok) {
-            throw new ServerException();
+            throw ServerException();
           }
         },
       );
@@ -74,7 +74,7 @@ class ShipsRepository {
       ).then(
         (response) {
           if (response.statusCode != HttpStatus.ok) {
-            throw new ServerException();
+            throw ServerException();
           }
         },
       );
@@ -99,7 +99,7 @@ class ShipsRepository {
                 response.body,
               );
           } else {
-            throw new ServerException();
+            throw ServerException();
           }
         },
       );

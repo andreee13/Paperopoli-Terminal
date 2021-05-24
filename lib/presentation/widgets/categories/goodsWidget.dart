@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
 import 'package:paperopoli_terminal/cubits/goods/goods_cubit.dart';
-import 'package:paperopoli_terminal/data/models/good_model.dart';
-import 'package:paperopoli_terminal/data/models/models_status.dart';
+import 'package:paperopoli_terminal/data/models/good/good_model.dart';
 import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
 
 class GoodsWidget extends StatefulWidget {
@@ -12,7 +10,7 @@ class GoodsWidget extends StatefulWidget {
 }
 
 class _GoodsWidgetState extends State<GoodsWidget> {
-  List<GoodModel> _goods = [];
+  final List<GoodModel> _goods = [];
 
   void _fetch() async => context.read<GoodsCubit>().fetch(
         user: HomeScreen.of(context)!.getUser(),
@@ -28,12 +26,17 @@ class _GoodsWidgetState extends State<GoodsWidget> {
     });
   }
 
-  _changeStatus(
+  @override
+  Widget build(BuildContext context) {
+    throw UnimplementedError();
+  }
+
+  /*void _changeStatus(
     GoodModel goodModel,
     GoodStatus goodStatus,
   ) {
     setState(() {
-      goodModel..status = goodStatus;
+      goodModel.status = goodStatus;
     });
   }
 
@@ -106,6 +109,10 @@ class _GoodsWidgetState extends State<GoodsWidget> {
                               25,
                             ),
                           ),
+                          onPressed: () => _changeStatus(
+                            goodModel,
+                            status,
+                          ),
                           child: Text(
                             GoodModel.getStatusName(
                               status,
@@ -115,10 +122,6 @@ class _GoodsWidgetState extends State<GoodsWidget> {
                                   ? Colors.white
                                   : null,
                             ),
-                          ),
-                          onPressed: () => _changeStatus(
-                            goodModel,
-                            status,
                           ),
                         ),
                       )
@@ -184,9 +187,7 @@ class _GoodsWidgetState extends State<GoodsWidget> {
       _goods
                   .where(
                     (element) => element.status == status,
-                  )
-                  .length >
-              0
+                  ).isNotEmpty
           ? Padding(
               padding: const EdgeInsets.only(
                 bottom: 16,
@@ -328,5 +329,5 @@ class _GoodsWidgetState extends State<GoodsWidget> {
             }
           },
         ),
-      );
+      );*/
 }

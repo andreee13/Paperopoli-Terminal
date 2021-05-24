@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:paperopoli_terminal/core/utils/constants.dart';
-import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
 import 'package:paperopoli_terminal/cubits/vehicles/vehicles_cubit.dart';
-import 'package:paperopoli_terminal/data/models/models_status.dart';
-import 'package:paperopoli_terminal/data/models/vehicle_model.dart';
+import 'package:paperopoli_terminal/data/models/vehicle/vehicle_model.dart';
 import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,13 +10,13 @@ class VehiclesWidget extends StatefulWidget {
 }
 
 class _VehiclesWidgetState extends State<VehiclesWidget> {
-  List<VehicleModel> _vehicles = FAKE_VEHICLES;
+  final List<VehicleModel> _vehicles = [];
 
   void _fetch() async => context.read<VehiclesCubit>().fetch(
         user: HomeScreen.of(context)!.getUser(),
       );
 
-  _deletevehicle(
+  /*void _deletevehicle(
     VehicleModel vehicleModel,
   ) {
     setState(() {
@@ -29,12 +26,12 @@ class _VehiclesWidgetState extends State<VehiclesWidget> {
     });
   }
 
-  _changeStatus(
+  void _changeStatus(
     VehicleModel vehicleModel,
     VehicleStatus vehicleStatus,
   ) {
     setState(() {
-      vehicleModel..status = vehicleStatus;
+      vehicleModel.status = vehicleStatus;
     });
   }
 
@@ -110,6 +107,10 @@ class _VehiclesWidgetState extends State<VehiclesWidget> {
                               25,
                             ),
                           ),
+                          onPressed: () => _changeStatus(
+                            vehicleModel,
+                            status,
+                          ),
                           child: Text(
                             VehicleModel.getStatusName(
                               status,
@@ -119,10 +120,6 @@ class _VehiclesWidgetState extends State<VehiclesWidget> {
                                   ? Colors.white
                                   : null,
                             ),
-                          ),
-                          onPressed: () => _changeStatus(
-                            vehicleModel,
-                            status,
                           ),
                         ),
                       )
@@ -188,9 +185,7 @@ class _VehiclesWidgetState extends State<VehiclesWidget> {
       _vehicles
                   .where(
                     (element) => element.status == status,
-                  )
-                  .length >
-              0
+                  ).isNotEmpty
           ? Padding(
               padding: const EdgeInsets.only(
                 bottom: 16,
@@ -332,5 +327,9 @@ class _VehiclesWidgetState extends State<VehiclesWidget> {
             }
           },
         ),
-      );
+      );*/
+  @override
+  Widget build(BuildContext context) {
+    throw UnimplementedError();
+  }
 }

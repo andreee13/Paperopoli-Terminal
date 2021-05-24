@@ -5,15 +5,15 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paperopoli_terminal/core/errors/exceptions.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
-import 'package:paperopoli_terminal/data/models/operation/operation_model.dart';
+import 'package:paperopoli_terminal/data/models/trip/trip_model.dart';
 
-class OperationsRepository {
-  Future<List<OperationModel>> fetch({
+class TripsRepository {
+  Future<List<TripModel>> fetch({
     required User user,
   }) async =>
       await http.get(
         Uri.parse(
-          '$TERMINAL_API_URL/operations/index',
+          '$TERMINAL_API_URL/trips/index',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -23,12 +23,12 @@ class OperationsRepository {
         (response) {
           if (response.statusCode == HttpStatus.ok ||
               response.statusCode == HttpStatus.notModified) {
-            print(response.body);
             return jsonDecode(
               response.body,
             )
-                .map<OperationModel>(
-                  (item) => OperationModel.fromJson(
+                .values
+                .map<TripModel>(
+                  (item) => TripModel.fromJson(
                     item,
                   ),
                 )
@@ -45,7 +45,7 @@ class OperationsRepository {
   }) async =>
       http.delete(
         Uri.parse(
-          '$TERMINAL_API_URL/operations/delete/$id',
+          '$TERMINAL_API_URL/trips/delete/$id',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -60,12 +60,12 @@ class OperationsRepository {
       );
 
   Future<void> edit({
-    required OperationModel operationModel,
+    required TripModel tripModel,
     required User user,
   }) async =>
       http.patch(
         Uri.parse(
-          '$TERMINAL_API_URL/operations/edit/${operationModel.id}',
+          '$TERMINAL_API_URL/trips/edit/${tripModel.id}',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -79,13 +79,13 @@ class OperationsRepository {
         },
       );
 
-  Future<OperationModel> create({
-    required OperationModel operationModel,
+  Future<TripModel> create({
+    required TripModel tripModel,
     required User user,
   }) async =>
       http.post(
         Uri.parse(
-          '$TERMINAL_API_URL/operations/create',
+          '$TERMINAL_API_URL/trips/create',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -94,7 +94,7 @@ class OperationsRepository {
       ).then(
         (response) {
           if (response.statusCode == HttpStatus.ok) {
-            return operationModel
+            return tripModel
               ..id = int.parse(
                 response.body,
               );

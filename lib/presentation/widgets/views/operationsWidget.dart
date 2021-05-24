@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
 import 'package:paperopoli_terminal/cubits/operations/operations_cubit.dart';
-import 'package:paperopoli_terminal/data/models/models_status.dart';
-import 'package:paperopoli_terminal/data/models/operation_model.dart';
+import 'package:paperopoli_terminal/data/models/operation/operation_model.dart';
+import 'package:paperopoli_terminal/data/models/operation/operation_status.dart';
 import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
-import 'package:timelines/timelines.dart';
 
 class OperationsWidget extends StatefulWidget {
   @override
@@ -37,16 +35,21 @@ class _OperationsWidgetState extends State<OperationsWidget> {
     });
   }
 
-  _changeStatus(
+  void _changeStatus(
     OperationModel operationModel,
     OperationStatus operationStatus,
   ) {
     setState(() {
-      operationModel..status = operationStatus;
+      operationModel.status.add(operationStatus);
     });
   }
 
-  Widget _itemBuilder(
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+
+  /*Widget _itemBuilder(
     OperationModel operationModel,
     List<OperationModel> operations,
   ) =>
@@ -134,10 +137,9 @@ class _OperationsWidgetState extends State<OperationsWidget> {
                       builder: TimelineTileBuilder.connected(
                         indicatorBuilder: (context, currIndex) {
                           return OutlinedDotIndicator(
-                            color:
-                                operationModel.status == OperationStatus.done
-                                    ? Color(0xff6ad192)
-                                    : Color(0xffe6e7e9),
+                            color: operationModel.status == OperationStatus.done
+                                ? Color(0xff6ad192)
+                                : Color(0xffe6e7e9),
                             backgroundColor:
                                 operationModel.status == OperationStatus.done
                                     ? Color(0xffd4f5d6)
@@ -148,7 +150,7 @@ class _OperationsWidgetState extends State<OperationsWidget> {
                                     : 2.5,
                           );
                         },
-                        /*connectorBuilder: (context, index, connectorType) {
+                        connectorBuilder: (context, index, connectorType) {
                           var color;
                           if (index + 1 < data.length - 1 &&
                               data[index].isInProgress &&
@@ -177,7 +179,7 @@ class _OperationsWidgetState extends State<OperationsWidget> {
                               child: SizedBox(),
                             ),
                           );
-                        },*/
+                        },
                         itemCount: 1,
                       ),
                     ),
@@ -185,7 +187,7 @@ class _OperationsWidgetState extends State<OperationsWidget> {
                 ),
               ),
             ],
-            /*trailing: Row(
+            trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: operationStatus.values
                       .where(
@@ -270,7 +272,7 @@ class _OperationsWidgetState extends State<OperationsWidget> {
                     ),
                   ],
             ),
-            */
+            
           ),
         ),
       );
@@ -280,11 +282,10 @@ class _OperationsWidgetState extends State<OperationsWidget> {
     List<OperationModel> operations,
   ) =>
       operations
-                  .where(
-                    (element) => element.status == status,
-                  )
-                  .length >
-              0
+              .where(
+                (element) => element.status.last == status,
+              )
+              .isNotEmpty
           ? Padding(
               padding: const EdgeInsets.only(
                 bottom: 16,
@@ -302,7 +303,7 @@ class _OperationsWidgetState extends State<OperationsWidget> {
                           OperationModel.getStatusName(
                             operations
                                 .where(
-                                  (element) => element.status == status,
+                                  (element) => element.status.last == status,
                                 )
                                 .first
                                 .status,
@@ -429,4 +430,5 @@ class _OperationsWidgetState extends State<OperationsWidget> {
           },
         ),
       );
+}*/
 }

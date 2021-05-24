@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
 import 'package:paperopoli_terminal/cubits/ships/ships_cubit.dart';
-import 'package:paperopoli_terminal/data/models/models_status.dart';
-import 'package:paperopoli_terminal/data/models/ships_model.dart';
 import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
-import 'package:timelines/timelines.dart';
 
 class ShipsWidget extends StatefulWidget {
   @override
@@ -26,7 +22,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
         user: HomeScreen.of(context)!.getUser(),
       );
 
-  void _delete(
+  /*void _delete(
     ShipModel shipModel,
     List<ShipModel> ships,
   ) {
@@ -37,12 +33,12 @@ class _ShipsWidgetState extends State<ShipsWidget> {
     });
   }
 
-  _changeStatus(
+  void _changeStatus(
     ShipModel shipModel,
     ShipStatus shipStatus,
   ) {
     setState(() {
-      shipModel..status = shipStatus;
+      shipModel.status = shipStatus;
     });
   }
 
@@ -275,9 +271,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
       ships
                   .where(
                     (element) => element.status == status,
-                  )
-                  .length >
-              0
+                  ).isNotEmpty
           ? Padding(
               padding: const EdgeInsets.only(
                 bottom: 16,
@@ -421,5 +415,10 @@ class _ShipsWidgetState extends State<ShipsWidget> {
             }
           },
         ),
-      );
+      );*/
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
 }

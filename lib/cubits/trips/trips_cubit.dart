@@ -2,18 +2,18 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:paperopoli_terminal/core/errors/exceptions.dart';
-import 'package:paperopoli_terminal/data/models/vehicle/vehicle_model.dart';
-import 'package:paperopoli_terminal/data/repositories/vehicles_repository.dart';
+import 'package:paperopoli_terminal/data/models/trip/trip_model.dart';
+import 'package:paperopoli_terminal/data/repositories/trips_repository.dart';
 
-part 'vehicles_state.dart';
+part 'trips_state.dart';
 
-class VehiclesCubit extends Cubit<VehiclesState> {
-  final VehiclesRepository repository;
+class TripsCubit extends Cubit<TripsState> {
+  final TripsRepository repository;
 
-  VehiclesCubit({
+  TripsCubit({
     required this.repository,
   }) : super(
-          VehiclesInitial(),
+          TripsInitial(),
         );
 
   Future<void> fetch({
@@ -21,18 +21,18 @@ class VehiclesCubit extends Cubit<VehiclesState> {
   }) async {
     try {
       emit(
-        VehiclesLoading(),
+        TripsLoading(),
       );
       emit(
-        VehiclesLoaded(
-          vehicles: await repository.fetch(
+        TripsLoaded(
+          trips: await repository.fetch(
             user: user,
           ),
         ),
       );
     } on ServerException catch (e, _) {
       emit(
-        VehiclesError(e),
+        TripsError(e),
       );
     }
   }

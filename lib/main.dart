@@ -10,10 +10,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paperopoli_terminal/cubits/goods/goods_cubit.dart';
 import 'package:paperopoli_terminal/cubits/operations/operations_cubit.dart';
 import 'package:paperopoli_terminal/cubits/ships/ships_cubit.dart';
+import 'package:paperopoli_terminal/cubits/trips/trips_cubit.dart';
 import 'package:paperopoli_terminal/cubits/vehicles/vehicles_cubit.dart';
 import 'package:paperopoli_terminal/data/repositories/goods_repository.dart';
 import 'package:paperopoli_terminal/data/repositories/operations_repository.dart';
 import 'package:paperopoli_terminal/data/repositories/ships_repository.dart';
+import 'package:paperopoli_terminal/data/repositories/trips_repository.dart';
 import 'package:paperopoli_terminal/data/repositories/vehicles_repository.dart';
 
 import 'core/utils/themes/default_theme.dart';
@@ -25,7 +27,7 @@ import 'presentation/screens/home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  //FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   await _initializeDeviceProperties();
   runZonedGuarded(
     () {
@@ -57,6 +59,11 @@ void main() async {
             BlocProvider(
               create: (context) => OperationsCubit(
                 repository: OperationsRepository(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => TripsCubit(
+                repository: TripsRepository(),
               ),
             ),
           ],

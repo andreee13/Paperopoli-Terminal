@@ -12,15 +12,15 @@ class _AuthenticatonScreenState extends State<AuthenticatonScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         floatingActionButton: FloatingActionButton(
-          child: Icon(
-            Icons.help_outline_outlined,
-            color: Colors.black,
-          ),
           backgroundColor: Colors.transparent,
           elevation: 0,
           hoverElevation: 0,
           highlightElevation: 0,
           onPressed: () {},
+          child: Icon(
+            Icons.help_outline_outlined,
+            color: Colors.black,
+          ),
         ),
         body: Stack(
           children: [

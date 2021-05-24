@@ -247,17 +247,33 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Drawer(
+              elevation: 0,
               child: Stack(
                 children: [
                   SizedBox.expand(
                     child: Material(
-                      color: Color(0xff242342),
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox.expand(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        right: 32,
+                      ),
+                      child: Material(
+                        color: Color(0xff242342),
+                      ),
                     ),
                   ),
                   Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.fromLTRB(
+                        16,
+                        8,
+                        48,
+                        16,
+                      ),
                       child: Image.asset(
                         'assets/images/ship_icon_white.png',
                         height: 125,

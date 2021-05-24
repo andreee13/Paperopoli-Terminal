@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
-import 'package:paperopoli_terminal/data/models/ships_model.dart';
+import 'package:paperopoli_terminal/data/models/trip/trip_model.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class CalendarWidget extends StatefulWidget {
@@ -9,7 +9,7 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  final List<ShipModel> _ships = [];
+  final List<TripModel> _trips = [];
 
   @override
   Widget build(BuildContext context) => Expanded(
@@ -30,7 +30,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 children: [
                   Countup(
                     begin: 0,
-                    end: _ships.length.toDouble(),
+                    end: _trips.length.toDouble(),
                     curve: Curves.decelerate,
                     duration: Duration(
                       milliseconds: 300,
@@ -97,7 +97,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                           Icons.directions_boat,
                         ),
                         dataSource: OperationSource(
-                          _ships,
+                          _trips,
                         ),
                       ),
                     ),
@@ -134,13 +134,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 }
 
 class OperationSource extends CalendarDataSource {
-  OperationSource(List<ShipModel> source) {
+  OperationSource(List<TripModel> source) {
     appointments = source
         .map(
           (e) => Operation(
             e.id.toString(),
-            e.expectedArrivalTime,
-            e.expectedArrivalTime,
+            e.time.expectedArrivalTime,
+            e.time.expectedArrivalTime,
             Colors.red,
             false,
           ),
