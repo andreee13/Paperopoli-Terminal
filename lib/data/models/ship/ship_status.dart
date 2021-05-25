@@ -9,11 +9,3 @@ class ShipStatus {
     required this.name,
   });
 }
-
-//TODO:REMOVE
-enum ShipStatusName {
-  docked,
-  arriving,
-  leaving,
-  none,
-}

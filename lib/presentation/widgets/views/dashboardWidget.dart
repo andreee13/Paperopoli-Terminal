@@ -20,7 +20,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     Color(0xfff2fdff),
   ];
   late List<TripModel> _trips;
-  List<OperationsChartData> _chartData = [];
+  final List<OperationsChartData> _chartData = [];
 
   @override
   void initState() {

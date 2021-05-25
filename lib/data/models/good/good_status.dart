@@ -9,11 +9,3 @@ class GoodStatus {
     required this.name,
   });
 }
-
-//TODO: REMOVE
-enum GoodStatusName {
-  onShip,
-  onGround,
-  leaved,
-  none,
-}

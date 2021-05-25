@@ -7,12 +7,3 @@ class OperationStatus {
     required this.name,
   });
 }
-
-
-//TODO: remove
-enum OperationStatusname {
-  working,
-  waiting,
-  done,
-  none,
-}

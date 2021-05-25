@@ -9,11 +9,3 @@ class PersonStatus {
     required this.name,
   });
 }
-
-//TODO:REMOVE
-enum PersonStatusname {
-  onShip,
-  onGround,
-  onVehicle,
-  none,
-}

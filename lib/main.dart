@@ -27,7 +27,7 @@ import 'presentation/screens/home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  //FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   await _initializeDeviceProperties();
   runZonedGuarded(
     () {
@@ -77,12 +77,6 @@ void main() async {
 
 Future<void> _initializeDeviceProperties() async {
   GestureBinding.instance!.resamplingEnabled = true;
-  await SystemChrome.setPreferredOrientations(
-    [
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ],
-  );
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,

@@ -9,10 +9,3 @@ class VehicleStatus {
     required this.name,
   });
 }
-
-//TODO: REMOVE
-enum VehicleStatusName {
-  onGround,
-  onShip,
-  leaved,
-}
