@@ -21,9 +21,9 @@ dependencies:
   flutter_bloc: ^7.0.0  
   # flutter_annual_task: ^0.2.0
   timelines: ^0.1.0
-  syncfusion_flutter_calendar: ^19.1.59
-  syncfusion_flutter_charts: ^19.1.64
   collection: ^1.15.0
+  flutter_calendar_carousel: ^2.0.1
+  fl_chart: ^0.36.1
 
 dev_dependencies:
   flutter_test:

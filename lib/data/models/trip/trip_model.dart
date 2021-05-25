@@ -41,6 +41,11 @@ class TripModel {
                   ),
                 ),
           );
+          op.status.sort(
+            (a, b) => a.timestamp.compareTo(
+              b.timestamp,
+            ),
+          );
         },
       );
     }

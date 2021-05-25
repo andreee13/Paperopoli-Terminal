@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
 import 'package:paperopoli_terminal/data/models/trip/trip_model.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class CalendarWidget extends StatefulWidget {
   @override
   _CalendarWidgetState createState() => _CalendarWidgetState();
+  }
+  
+  class _CalendarWidgetState extends State<CalendarWidget> {
+    @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
 }
 
-class _CalendarWidgetState extends State<CalendarWidget> {
+/*class _CalendarWidgetState extends State<CalendarWidget> {
   final List<TripModel> _trips = [];
 
   @override
@@ -183,3 +190,4 @@ class Operation {
   Color background;
   bool isAllDay;
 }
+*/
