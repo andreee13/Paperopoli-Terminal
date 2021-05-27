@@ -107,6 +107,7 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
         ),
         home: BlocBuilder<AuthenticationCubit, AuthenticationState>(
           builder: (context, state) {
+            //return LandingScreen();
             if (state is AuthenticationError ||
                 state is AuthenticationNotLogged) {
               return AuthenticatonScreen();

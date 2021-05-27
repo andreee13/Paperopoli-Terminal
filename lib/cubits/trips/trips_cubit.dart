@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
-import 'package:paperopoli_terminal/core/errors/exceptions.dart';
 import 'package:paperopoli_terminal/data/models/trip/trip_model.dart';
 import 'package:paperopoli_terminal/data/repositories/trips_repository.dart';
 
@@ -30,7 +29,7 @@ class TripsCubit extends Cubit<TripsState> {
           ),
         ),
       );
-    } on ServerException catch (e, _) {
+    } on Exception catch (e, _) {
       emit(
         TripsError(e),
       );

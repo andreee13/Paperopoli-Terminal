@@ -46,7 +46,7 @@ class _OperationsWidgetState extends State<OperationsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    throw UnimplementedError();
   }
 
   /*Widget _itemBuilder(

@@ -36,55 +36,71 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildSeparator(_, 5),
-                ListTile(
-                  title: Text(
-                    CATEGORIES[index].name,
-                    style: TextStyle(
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    16,
+                    8,
+                    0,
+                    8,
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      CATEGORIES[index].name,
+                      style: TextStyle(
+                        color: _selectedCategory == CATEGORIES[index]
+                            ? Colors.white
+                            : Color(0xff909399),
+                      ),
+                    ),
+                    leading: Icon(
+                      CATEGORIES[index].mainIcon,
                       color: _selectedCategory == CATEGORIES[index]
                           ? Colors.white
                           : Color(0xff909399),
                     ),
+                    selected: _selectedCategory == CATEGORIES[index],
+                    hoverColor: Colors.white10,
+                    selectedTileColor: Colors.white10,
+                    onTap: () {
+                      setState(() {
+                        _selectedCategory = CATEGORIES[index];
+                      });
+                    },
                   ),
-                  leading: Icon(
-                    CATEGORIES[index].mainIcon,
+                ),
+              ],
+            )
+          : Padding(
+              padding: const EdgeInsets.fromLTRB(
+                16,
+                8,
+                0,
+                8,
+              ),
+              child: ListTile(
+                title: Text(
+                  CATEGORIES[index].name,
+                  style: TextStyle(
                     color: _selectedCategory == CATEGORIES[index]
                         ? Colors.white
                         : Color(0xff909399),
                   ),
-                  selected: _selectedCategory == CATEGORIES[index],
-                  hoverColor: Colors.white10,
-                  selectedTileColor: Colors.white10,
-                  onTap: () {
-                    setState(() {
-                      _selectedCategory = CATEGORIES[index];
-                    });
-                  },
                 ),
-              ],
-            )
-          : ListTile(
-              title: Text(
-                CATEGORIES[index].name,
-                style: TextStyle(
+                leading: Icon(
+                  CATEGORIES[index].mainIcon,
                   color: _selectedCategory == CATEGORIES[index]
                       ? Colors.white
                       : Color(0xff909399),
                 ),
+                selected: _selectedCategory == CATEGORIES[index],
+                hoverColor: Colors.white10,
+                selectedTileColor: Colors.white10,
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = CATEGORIES[index];
+                  });
+                },
               ),
-              leading: Icon(
-                CATEGORIES[index].mainIcon,
-                color: _selectedCategory == CATEGORIES[index]
-                    ? Colors.white
-                    : Color(0xff909399),
-              ),
-              selected: _selectedCategory == CATEGORIES[index],
-              hoverColor: Colors.white10,
-              selectedTileColor: Colors.white10,
-              onTap: () {
-                setState(() {
-                  _selectedCategory = CATEGORIES[index];
-                });
-              },
             );
 
   Widget _buildSeparator(
@@ -92,21 +108,24 @@ class _HomeScreenState extends State<HomeScreen> {
     int index,
   ) =>
       index == 1 || index == 5
-          ? Padding(
-              padding: const EdgeInsets.only(
-                top: 30,
-                bottom: 16,
-                left: 16,
-              ),
-              child: Text(
-                index == 1 ? 'Categorie' : 'Viste',
-                style: TextStyle(
-                  color: Colors.white60,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
+          ? Center(
+            child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 60,
+                  bottom: 24,
+                  right: 32
+
+                ),
+                child: Text(
+                  index == 1 ? 'CATEGORIE' : 'VISTE',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 15,
+                    letterSpacing: 3,
+                  ),
                 ),
               ),
-            )
+          )
           : SizedBox();
 
   Widget _buildMainWidget() {
@@ -132,11 +151,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Colors.white,
         floatingActionButton: CATEGORIES.indexOf(_selectedCategory) > 1
-            ? FloatingActionButton(
+            ? FloatingActionButton.extended(
                 onPressed: () {},
+                backgroundColor: Color(0xff5564E8),
                 //onPressed: () => _buildNewItemScreen(),
-                child: Icon(
+                icon: Icon(
                   Icons.add,
+                ),
+                label: Text(
+                  'Nuovo',
                 ),
               )
             : null,
@@ -281,7 +304,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  Center(
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 140,
+                    ),
                     child: ListView.separated(
                       shrinkWrap: true,
                       separatorBuilder: _buildSeparator,

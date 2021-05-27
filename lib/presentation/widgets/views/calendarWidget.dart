@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
-import 'package:paperopoli_terminal/data/models/trip/trip_model.dart';
 
 class CalendarWidget extends StatefulWidget {
   @override

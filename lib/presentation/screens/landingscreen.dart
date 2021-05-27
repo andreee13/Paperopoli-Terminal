@@ -8,7 +8,7 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreenState extends State<LandingScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: Color(0xffF44235),
+    backgroundColor: Colors.white,
     body: Text('landing'),
   );
 }
