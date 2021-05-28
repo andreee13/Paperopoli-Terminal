@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
+import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
 import 'package:paperopoli_terminal/cubits/trips/trips_cubit.dart';
 import 'package:paperopoli_terminal/data/models/trip/trip_model.dart';
 import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
@@ -37,49 +38,61 @@ class _TripsWidgetState extends State<TripsWidget> {
           24,
           16,
           16,
-          24,
+          16,
         ),
         height: 160,
-        width: MediaQuery.of(context).size.width * 0.16,
-        margin: index.isOdd
-            ? null
-            : EdgeInsets.only(
-                right: 20,
-              ),
+        margin: const EdgeInsets.only(
+          right: 24,
+          bottom: 24,
+        ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
           color: ACCENT_COLORS[index.remainder(ACCENT_COLORS.length)],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+        child: Stack(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
-                Text(
-                  'Viaggio #${_trips[index].id.toString()}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff262539),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Viaggio #${_trips[index].id.toString()}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff262539),
+                        fontSize: 16,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.more_horiz,
+                        color: Color(0xff262539),
+                      ),
+                    ),
+                  ],
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.more_horiz,
-                    color: Color(0xff262539),
+                Text(
+                  '${_trips[index].time.expectedArrivalTime.toIso8601String().substring(11, 16)} - ${_trips[index].time.actualArrivalTime.toIso8601String().substring(11, 16)}',
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
                   ),
                 ),
               ],
             ),
-            Text(
-              '${_trips[index].time.expectedArrivalTime.toIso8601String().substring(11, 16)} - ${_trips[index].time.actualArrivalTime.toIso8601String().substring(11, 16)}',
-              style: TextStyle(
-                color: Colors.grey.shade500,
+            Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                icon: Icon(
+                  Icons.edit,
+                  color: Color(0xff242342),
+                ),
+                onPressed: () {},
               ),
             ),
-            Row(),
           ],
         ),
       );
@@ -95,193 +108,140 @@ class _TripsWidgetState extends State<TripsWidget> {
                   padding: const EdgeInsets.fromLTRB(
                     32,
                     32,
-                    0,
+                    56,
                     32,
                   ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4925,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: 40,
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 40,
+                          ),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Ionicons.search,
+                                color: Colors.grey.shade400,
                               ),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(
-                                    Ionicons.search,
-                                    color: Colors.grey.shade400,
-                                  ),
-                                  hintText: 'Cerca viaggio',
-                                  contentPadding: const EdgeInsets.fromLTRB(
-                                    16,
-                                    16,
-                                    16,
-                                    0,
-                                  ),
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey.shade400,
-                                  ),
-                                  border: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey.shade200,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey.shade200,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey.shade200,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  focusedErrorBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey.shade200,
-                                      width: 1,
-                                    ),
-                                  ),
+                              hintText: 'Cerca viaggi',
+                              contentPadding: const EdgeInsets.fromLTRB(
+                                16,
+                                16,
+                                16,
+                                0,
+                              ),
+                              hintStyle: TextStyle(
+                                color: Colors.grey.shade400,
+                              ),
+                              border: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade200,
+                                  width: 1,
+                                ),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade200,
+                                  width: 1,
+                                ),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade200,
+                                  width: 1,
+                                ),
+                              ),
+                              focusedErrorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade200,
+                                  width: 1,
                                 ),
                               ),
                             ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                             Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  'Viaggi di oggi',
+                                Countup(
+                                  begin: 0,
+                                  end: _trips.length.toDouble(),
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Color(0xff262539),
                                     fontSize: 40,
                                   ),
                                 ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    MaterialButton(
-                                      onPressed: () {},
-                                      elevation: 0,
-                                      padding: const EdgeInsets.all(16),
-                                      hoverElevation: 0,
-                                      highlightElevation: 0,
-                                      shape: CircleBorder(),
-                                      color: Color(0xffF9F9F9),
-                                      child: Icon(
-                                        Icons.add,
-                                        color: Color(0xff333333),
-                                        size: 26,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        Icons.arrow_back_ios,
-                                        size: 20,
-                                        color: Color(0xff333333),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      padding: EdgeInsets.zero,
-                                      icon: Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 20,
-                                        color: Color(0xff333333),
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  ' Viaggi',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xff262539),
+                                    fontSize: 40,
+                                  ),
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 180,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 24,
-                                ),
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: _trips.length,
-                                  itemBuilder: _tripsBuilder,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: 48,
-                                bottom: 80,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Attività giornaliera',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(0xff262539),
-                                      fontSize: 24,
-                                    ),
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                MaterialButton(
+                                  onPressed: () {},
+                                  elevation: 0,
+                                  padding: const EdgeInsets.all(16),
+                                  hoverElevation: 0,
+                                  highlightElevation: 0,
+                                  shape: CircleBorder(),
+                                  color: Color(0xffF9F9F9),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Color(0xff333333),
+                                    size: 26,
                                   ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffF9F9F9),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 14,
-                                      horizontal: 20,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 8,
-                                          ),
-                                          child: Text(
-                                            'Filtra',
-                                            style: TextStyle(
-                                              color: Color(0xff262539),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                        Transform.rotate(
-                                          angle: 1.5708,
-                                          child: Icon(
-                                            Icons.arrow_forward_ios,
-                                            color: Color(0xff262539),
-                                            size: 16,
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(
+                                    Icons.arrow_back_ios,
+                                    size: 20,
+                                    color: Color(0xff333333),
                                   ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: MediaQuery.of(context).size.width * 0.20,
-                              child: Row(
-                                children: [],
-                              ),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 20,
+                                    color: Color(0xff333333),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 48,
+                          ),
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            itemCount: _trips.length,
+                            itemBuilder: _tripsBuilder,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                              childAspectRatio: 2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

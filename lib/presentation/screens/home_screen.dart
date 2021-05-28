@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/cubits/authentication/authentication_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -109,26 +111,26 @@ class _HomeScreenState extends State<HomeScreen> {
   ) =>
       index == 1 || index == 5
           ? Center(
-            child: Padding(
+              child: Padding(
                 padding: const EdgeInsets.only(
                   top: 60,
                   bottom: 24,
-                  right: 32
-
+                  right: 32,
                 ),
                 child: Text(
                   index == 1 ? 'CATEGORIE' : 'VISTE',
-                  style: TextStyle(
+                  style: GoogleFonts.nunito(
                     color: Colors.white70,
+                    fontWeight: FontWeight.bold,
                     fontSize: 15,
-                    letterSpacing: 3,
                   ),
                 ),
               ),
-          )
+            )
           : SizedBox();
 
   Widget _buildMainWidget() {
+    // return TripsWidget();
     switch (_selectedCategory.name) {
       case 'Dashboard':
         return DashboardWidget();
@@ -304,15 +306,83 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 140,
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 140,
+                      ),
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        separatorBuilder: _buildSeparator,
+                        itemBuilder: _buildCategories,
+                        itemCount: CATEGORIES.length,
+                      ),
                     ),
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      separatorBuilder: _buildSeparator,
-                      itemBuilder: _buildCategories,
-                      itemCount: CATEGORIES.length,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        right: 32,
+                        bottom: 32,
+                      ),
+                      child: MaterialButton(
+                        onPressed: () async => await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(
+                              'Logout',
+                            ),
+                            content: Text(
+                              'Vuoi davverro effetuare il logout?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(
+                                  context,
+                                  false,
+                                ),
+                                child: Text(
+                                  'Annulla',
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(
+                                  context,
+                                  true,
+                                ),
+                                child: Text(
+                                  'Logout',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ).then(
+                          (value) async => value
+                              ? await context
+                                  .read<AuthenticationCubit>()
+                                  .logOut()
+                              : {},
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.logout,
+                              color: Colors.white70,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              'Logout',
+                              style: TextStyle(
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],

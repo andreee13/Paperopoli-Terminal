@@ -36,10 +36,11 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
   ) =>
       InputDecoration(
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 15,
+          horizontal: 16,
+          vertical: 16,
         ),
-        fillColor: Colors.grey.withOpacity(0.2),
-        filled: true,
+        fillColor: Colors.grey.withOpacity(0.1),
+        filled: false,
         hintStyle: TextStyle(
           color: Colors.black45,
         ),
@@ -58,226 +59,218 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                   _passwordVisible = !_passwordVisible;
                 }),
               ),
-        border: OutlineInputBorder(
+        border: UnderlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(7),
           ),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(
+            color: Colors.grey,
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(7),
           ),
-          borderSide: BorderSide.none,
+          //borderSide: BorderSide.none,
         ),
       );
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 60,
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xffD0C0D4).withOpacity(0.3),
+              blurRadius: 128,
+              spreadRadius: 64,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/images/ship_icon_red.png',
-                  height: 200,
-                ),
-                Text(
-                  'Paperopoli Terminal',
-                  style: TextStyle(
-                    fontSize: 45,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+          ],
+          borderRadius: BorderRadius.circular(
+            24,
           ),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width / 3,
-              minHeight: MediaQuery.of(context).size.width / 4,
+        ),
+        padding: const EdgeInsets.all(
+          24,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 16,
+              ),
+              child: Text(
+                'LOGIN',
+                style: TextStyle(
+                  fontSize: 36,
+                  color: Color(0xff242342),
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
             ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 30,
-                    left: 30,
-                    top: 40,
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 48,
+                bottom: 24,
+                left: 8,
+                right: 8,
+              ),
+              child: TextFormField(
+                controller: _emailController,
+                decoration: _getInputDecoration(
+                  'Email',
+                  Icons.email_outlined,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 16,
+                left: 8,
+                right: 8,
+              ),
+              child: TextFormField(
+                controller: _passwordController,
+                obscureText: !_passwordVisible,
+                decoration: _getInputDecoration(
+                  'Password',
+                  _passwordVisible ? Icons.visibility_off : Icons.visibility,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            Center(
+              child: MaterialButton(
+                onPressed: () async {
+                  try {
+                    await context
+                        .read<AuthenticationCubit>()
+                        .logInWithCredentials(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        );
+                    if (context.read<AuthenticationCubit>().state
+                        is AuthenticationNotLogged) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Password/email incorretti',
+                          ),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Si è verificato un errore',
+                        ),
+                      ),
+                    );
+                  }
+                },
+                minWidth: 320,
+                height: 56,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
                   ),
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 40,
-                            bottom: 15,
-                          ),
-                          child: TextFormField(
-                            controller: _emailController,
-                            decoration: _getInputDecoration(
-                              'Email',
-                              Icons.email_outlined,
-                            ),
+                ),
+                color: Color(0xff242342).withOpacity(0.7),
+                elevation: 0,
+                highlightElevation: 0,
+                child: Text(
+                  'Accedi',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 24,
+                right: 8,
+              ),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(
+                        'Recupero password',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(
+                            'Annulla',
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 8,
-                          ),
-                          child: TextFormField(
-                            controller: _passwordController,
-                            obscureText: !_passwordVisible,
-                            decoration: _getInputDecoration(
-                              'Password',
-                              _passwordVisible
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () => showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text(
-                                  'Recupero password',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: Text(
-                                      'Annulla',
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Email inviata',
-                                          ),
-                                        ),
-                                      );
-                                      await FirebaseAuth.instance
-                                          .sendPasswordResetEmail(
-                                        email: _passwordResetController.text,
-                                      );
-                                    },
-                                    child: Text(
-                                      'Invia',
-                                    ),
-                                  ),
-                                ],
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Inserisci il tuo indirizzo email per recuperare la password',
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                      ),
-                                      child: TextFormField(
-                                        controller: _passwordResetController,
-                                        autofocus: true,
-                                        decoration: _getInputDecoration(
-                                          'Email',
-                                          Icons.email_outlined,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                        TextButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Email inviata',
                                 ),
                               ),
-                            ),
-                            child: Text(
-                              'Password dimenticata?',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                color: Colors.green,
-                              ),
-                            ),
+                            );
+                            await FirebaseAuth.instance.sendPasswordResetEmail(
+                              email: _passwordResetController.text,
+                            );
+                          },
+                          child: Text(
+                            'Invia',
                           ),
                         ),
-                        SizedBox(
-                          height: 32,
-                        ),
-                        Center(
-                          child: MaterialButton(
-                            onPressed: () async {
-                              try {
-                                await context
-                                    .read<AuthenticationCubit>()
-                                    .logInWithCredentials(
-                                      email: _emailController.text,
-                                      password: _passwordController.text,
-                                    );
-                                if (context.read<AuthenticationCubit>().state
-                                    is AuthenticationNotLogged) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Password/email incorretti',
-                                      ),
-                                    ),
-                                  );
-                                }
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        'Si è verificato un errore',
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                            minWidth: MediaQuery.of(context).size.width / 6,
-                            height: 48,
-                            shape: RoundedRectangleBorder(
+                      ],
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Inserisci il tuo indirizzo email per recuperare la password',
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(10),
                               ),
                             ),
-                            color: Colors.blue.withOpacity(0.8),
-                            elevation: 0,
-                            highlightElevation: 0,
-                            child: Text(
-                              'Login',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 17,
+                            child: TextFormField(
+                              controller: _passwordResetController,
+                              autofocus: true,
+                              decoration: _getInputDecoration(
+                                'Email',
+                                Icons.email_outlined,
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    'Password dimenticata?',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 13,
+                      color: Colors.grey,
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 50,
-          ),
-        ],
+          ],
+        ),
       );
 }

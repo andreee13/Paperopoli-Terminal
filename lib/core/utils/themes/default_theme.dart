@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-// ignore: non_constant_identifier_names
 final ThemeData DEFAULT_THEME = ThemeData(
   fontFamily: 'SFProDisplay',
-  accentColor: Colors.blue,
+  accentColor: Color(0xff5564E8),
   scaffoldBackgroundColor: Colors.white,
   iconTheme: IconThemeData(
     color: Colors.white,
@@ -17,7 +16,7 @@ final ThemeData DEFAULT_THEME = ThemeData(
       ),
     ),
   ),
-  visualDensity: VisualDensity.adaptivePlatformDensity,
+  visualDensity: VisualDensity.comfortable,
   appBarTheme: AppBarTheme(
     color: Colors.red,
     elevation: 1,

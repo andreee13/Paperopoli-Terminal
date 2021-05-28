@@ -1025,7 +1025,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Mov. Recenti',
+                                  'Movimentazioni recenti',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Color(0xff262539),
