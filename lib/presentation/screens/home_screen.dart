@@ -7,9 +7,9 @@ import 'package:paperopoli_terminal/data/models/category_model.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/goodsWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/shipsWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/vehiclesWidget.dart';
-import 'package:paperopoli_terminal/presentation/widgets/views/calendarWidget.dart';
-import 'package:paperopoli_terminal/presentation/widgets/views/dashboardWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/views/operationsWidget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/views/dashboardWidget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/views/tripsWidget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -132,8 +132,8 @@ class _HomeScreenState extends State<HomeScreen> {
     switch (_selectedCategory.name) {
       case 'Dashboard':
         return DashboardWidget();
-      case 'Programma':
-        return CalendarWidget();
+      case 'Viaggi':
+        return TripsWidget();
       case 'Operazioni':
         return OperationsWidget();
       case 'Navi':

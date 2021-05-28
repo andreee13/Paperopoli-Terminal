@@ -16,7 +16,7 @@ const String OPEN_WEATHER_API_KEY = '3fad3e73d27847a54f8ba8da4f5c8112';
 
 const List<Color> ACCENT_COLORS = [
   Color(0xffF9FEDF),
-  Color(0xfff2fdff),
+  Color(0xffe6fbff),
   Color(0xffF3F1FF),
 ];
 

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:lottie/lottie.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/cubits/trips/trips_cubit.dart';
 import 'package:paperopoli_terminal/data/models/operation/operation_model.dart';
@@ -69,11 +70,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               ),
               height: 160,
               width: MediaQuery.of(context).size.width * 0.16,
-              margin: index.isOdd
-                  ? null
-                  : EdgeInsets.only(
-                      right: 20,
-                    ),
+              margin: EdgeInsets.only(
+                right: 20,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
                 color: ACCENT_COLORS[index.remainder(ACCENT_COLORS.length)],
@@ -288,7 +287,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.4925,
+                        width: MediaQuery.of(context).size.width * 0.51,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -1057,7 +1056,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               );
             } else if (tripState is TripsInitial || tripState is TripsLoading) {
               return Center(
-                child: CircularProgressIndicator(),
+                child: Lottie.network(
+                  'https://assets7.lottiefiles.com/packages/lf20_ikj1qt.json',
+                  height: 50,
+                  width: 50,
+                ),
+                //child: CircularProgressIndicator(),
               );
             } else {
               return Center(
@@ -1101,8 +1105,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 }
 
 class OperationsChartData {
-  int lenght;
+  final int lenght;
   final String dateTime;
 
-  OperationsChartData(this.lenght, this.dateTime);
+  OperationsChartData(
+    this.lenght,
+    this.dateTime,
+  );
 }
