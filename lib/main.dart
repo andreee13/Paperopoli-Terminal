@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:paperopoli_terminal/cubits/goods/goods_cubit.dart';
 import 'package:paperopoli_terminal/cubits/operations/operations_cubit.dart';
 import 'package:paperopoli_terminal/cubits/ships/ships_cubit.dart';
@@ -115,7 +116,11 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
               return HomeScreen();
             } else {
               return Center(
-                child: CircularProgressIndicator(),
+                child: Lottie.network(
+                  'https://assets7.lottiefiles.com/packages/lf20_ikj1qt.json',
+                  height: 100,
+                  width: 100,
+                ),
               );
             }
           },

@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
@@ -33,9 +32,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance!.addPostFrameCallback(
-      (timeStamp) => _fetch(),
-    );
+    _fetch();
   }
 
   void _fetch() => context.read<TripsCubit>().fetch(
@@ -1058,10 +1055,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               return Center(
                 child: Lottie.network(
                   'https://assets7.lottiefiles.com/packages/lf20_ikj1qt.json',
-                  height: 50,
-                  width: 50,
+                  height: 100,
+                  width: 100,
                 ),
-                //child: CircularProgressIndicator(),
               );
             } else {
               return Center(
@@ -1088,7 +1084,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                 ..onTap = () => _fetch(),
                               style: TextStyle(
                                 color: Colors.blue,
-                                decoration: TextDecoration.underline,
                               ),
                             ),
                           ],

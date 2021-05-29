@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'
     show kIsWeb, defaultTargetPlatform, TargetPlatform;
+import 'package:ionicons/ionicons.dart';
 import 'package:paperopoli_terminal/data/models/category_model.dart';
 
 const bool IS_WEB = kIsWeb;
@@ -23,7 +24,7 @@ const List<Color> ACCENT_COLORS = [
 const List<CategoryModel> CATEGORIES = [
   CategoryModel(
     name: 'Dashboard',
-    mainIcon: Icons.apps,
+    mainIcon: Ionicons.grid_outline,
     icons: [],
   ),
   CategoryModel(
@@ -33,12 +34,12 @@ const List<CategoryModel> CATEGORIES = [
   ),
   CategoryModel(
     name: 'Operazioni',
-    mainIcon: Icons.construction,
+    mainIcon: Ionicons.bar_chart_outline,
     icons: [],
   ),
   CategoryModel(
     name: 'Navi',
-    mainIcon: Icons.directions_boat,
+    mainIcon: Ionicons.boat_outline,
     icons: [
       Icons.login,
       Icons.logout,
@@ -47,7 +48,7 @@ const List<CategoryModel> CATEGORIES = [
   ),
   CategoryModel(
     name: 'Merci',
-    mainIcon: Icons.grid_view,
+    mainIcon: Ionicons.cube_outline,
     icons: [
       Icons.directions_boat,
       Icons.play_for_work,
@@ -56,7 +57,7 @@ const List<CategoryModel> CATEGORIES = [
   ),
   CategoryModel(
     name: 'Veicoli',
-    mainIcon: Icons.local_shipping,
+    mainIcon: Ionicons.car_outline,
     icons: [
       Icons.done,
       Icons.close,

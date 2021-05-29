@@ -1,8 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:lottie/lottie.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
 import 'package:paperopoli_terminal/cubits/trips/trips_cubit.dart';
@@ -16,17 +17,57 @@ class TripsWidget extends StatefulWidget {
 
 class _TripsWidgetState extends State<TripsWidget> {
   late List<TripModel> _trips;
+  late final TextEditingController _deleteTextController =
+      TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance!.addPostFrameCallback(
-      (timeStamp) => _fetch(),
-    );
+    _fetch();
+  }
+
+  @override
+  void dispose() {
+    _deleteTextController.dispose();
+    super.dispose();
   }
 
   void _fetch() => context.read<TripsCubit>().fetch(
         user: HomeScreen.of(context)!.getUser(),
+      );
+
+  InputDecoration _getInputDecoration(
+    String hintText,
+    IconData icon,
+  ) =>
+      InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        fillColor: Colors.grey.withOpacity(0.1),
+        filled: false,
+        hintStyle: TextStyle(
+          color: Colors.black45,
+        ),
+        hintText: hintText,
+        prefixIcon: Icon(
+          Ionicons.logo_slack,
+          color: Colors.black87,
+        ),
+        border: UnderlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(7),
+          ),
+          borderSide: BorderSide(
+            color: Colors.grey,
+          ),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(7),
+          ),
+        ),
       );
 
   Widget _tripsBuilder(
@@ -59,7 +100,7 @@ class _TripsWidgetState extends State<TripsWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Viaggio #${_trips[index].id.toString()}',
+                      'Viaggio #${_trips[index].id}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xff262539),
@@ -67,7 +108,50 @@ class _TripsWidgetState extends State<TripsWidget> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        _deleteTextController.clear();
+                        await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(
+                              'Elimina viaggio',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(
+                                  'Chiudi',
+                                ),
+                              ),
+                            ],
+                            content: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.20,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'Eliminando il viaggio non sarà più visibile in questa sezione e tutte le movimentazioni associate saranno rimosse dal sistema. Per confermare inserisci "${_trips[index].id}" nel campo sottostante.',
+                                  ),
+                                  SizedBox(
+                                    height: 16,
+                                  ),
+                                  TextFormField(
+                                    validator: (value) =>
+                                        value == _trips[index].id.toString()
+                                            ? null
+                                            : 'Valore errato',
+                                    controller: _deleteTextController,
+                                    decoration: _getInputDecoration(
+                                      'Email',
+                                      Icons.email_outlined,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                       icon: Icon(
                         Icons.more_horiz,
                         color: Color(0xff262539),
@@ -247,7 +331,11 @@ class _TripsWidgetState extends State<TripsWidget> {
               );
             } else if (tripState is TripsLoading || tripState is TripsInitial) {
               return Center(
-                child: CircularProgressIndicator(),
+                child: Lottie.network(
+                  'https://assets7.lottiefiles.com/packages/lf20_ikj1qt.json',
+                  height: 100,
+                  width: 100,
+                ),
               );
             } else {
               return Center(
@@ -274,7 +362,6 @@ class _TripsWidgetState extends State<TripsWidget> {
                                 ..onTap = () => _fetch(),
                               style: TextStyle(
                                 color: Colors.blue,
-                                decoration: TextDecoration.underline,
                               ),
                             ),
                           ],

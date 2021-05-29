@@ -71,23 +71,6 @@ class _AuthenticatonScreenState extends State<AuthenticatonScreen>
               ),
             ),
             Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: 64,
-                  top: 32,
-                ),
-                child: Text(
-                  'PAPEROPOLI TERMINAL',
-                  style: GoogleFonts.nunito(
-                    fontSize: 64,
-                    color: Color(0xff242342),
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            ),
-            Align(
               alignment: Alignment.bottomLeft,
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -100,34 +83,33 @@ class _AuthenticatonScreenState extends State<AuthenticatonScreen>
               ),
             ),
             Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                width: 380,
-                margin: EdgeInsets.only(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: EdgeInsets.only(
                   right: MediaQuery.of(context).size.width * 0.12,
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Image.asset(
-                        'assets/images/ship_icon.png',
-                        width: 300,
-                        color: Color(0xff5564E8).withOpacity(0.7),
+                    Image.asset(
+                      'assets/images/ship_icon.png',
+                      width: 170,
+                      color: Color(0xff5564E8).withOpacity(0.7),
+                    ),
+                    Text(
+                      'Paperopoli Terminal',
+                      style: GoogleFonts.nunito(
+                        fontSize: 56,
+                        color: Color(0xff242342),
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 200,
-                          ),
-                          child: LoginFormWidget(),
-                        ),
+                    Container(
+                      width: 380,
+                      margin: EdgeInsets.only(
+                        top: 64,
                       ),
+                      child: LoginFormWidget(),
                     ),
                   ],
                 ),
