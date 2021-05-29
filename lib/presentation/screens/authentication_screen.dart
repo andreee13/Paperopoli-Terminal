@@ -86,7 +86,7 @@ class _AuthenticatonScreenState extends State<AuthenticatonScreen>
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width * 0.12,
+                  right: MediaQuery.of(context).size.width * 0.11,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -107,7 +107,7 @@ class _AuthenticatonScreenState extends State<AuthenticatonScreen>
                     Container(
                       width: 380,
                       margin: EdgeInsets.only(
-                        top: 64,
+                        top: 80,
                       ),
                       child: LoginFormWidget(),
                     ),

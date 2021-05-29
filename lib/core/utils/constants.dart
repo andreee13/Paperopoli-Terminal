@@ -33,8 +33,8 @@ const List<CategoryModel> CATEGORIES = [
     icons: [],
   ),
   CategoryModel(
-    name: 'Operazioni',
-    mainIcon: Ionicons.bar_chart_outline,
+    name: 'Movimentazioni',
+    mainIcon: Icons.stacked_line_chart_outlined,
     icons: [],
   ),
   CategoryModel(

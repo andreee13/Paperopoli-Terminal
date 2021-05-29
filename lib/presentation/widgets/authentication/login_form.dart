@@ -235,7 +235,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Inserisci il tuo indirizzo email per recuperare la password',
+                            'Inserisci il tuo indirizzo email per il recupero password.',
                           ),
                           SizedBox(
                             height: 20,

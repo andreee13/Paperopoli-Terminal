@@ -88,19 +88,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         : Color(0xff909399),
                   ),
                 ),
-                leading: index == 2
-                    ? Image.asset(
-                        'assets/images/bar-chart-outline.png',
-                        color: _selectedCategory == CATEGORIES[index]
-                            ? Colors.white
-                            : Color(0xff909399),
-                      )
-                    : Icon(
-                        CATEGORIES[index].mainIcon,
-                        color: _selectedCategory == CATEGORIES[index]
-                            ? Colors.white
-                            : Color(0xff909399),
-                      ),
+                leading: Icon(
+                  CATEGORIES[index].mainIcon,
+                  color: _selectedCategory == CATEGORIES[index]
+                      ? Colors.white
+                      : Color(0xff909399),
+                ),
                 selected: _selectedCategory == CATEGORIES[index],
                 hoverColor: Colors.white10,
                 selectedTileColor: Colors.white10,
@@ -137,13 +130,13 @@ class _HomeScreenState extends State<HomeScreen> {
           : SizedBox();
 
   Widget _buildMainWidget() {
-    // return TripsWidget();
+    return TripsWidget();
     switch (_selectedCategory.name) {
       case 'Dashboard':
         return DashboardWidget();
       case 'Viaggi':
         return TripsWidget();
-      case 'Operazioni':
+      case 'Movimentazioni':
         return OperationsWidget();
       case 'Navi':
         return ShipsWidget();
