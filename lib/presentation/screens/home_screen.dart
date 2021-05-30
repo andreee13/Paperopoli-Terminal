@@ -25,6 +25,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   CategoryModel _selectedCategory = CATEGORIES[0];
+  Object? _itemToCreate;
+  bool _inCreatingMode = false;
 
   User getUser() =>
       (context.read<AuthenticationCubit>().state as AuthenticationLogged).user!;
@@ -130,7 +132,6 @@ class _HomeScreenState extends State<HomeScreen> {
           : SizedBox();
 
   Widget _buildMainWidget() {
-    return TripsWidget();
     switch (_selectedCategory.name) {
       case 'Dashboard':
         return DashboardWidget();
@@ -149,124 +150,28 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  //TODO
+  Widget _buildCreateWidget() => AnimatedSwitcher(
+        duration: Duration(
+          milliseconds: 500,
+        ),
+        child: _itemToCreate == null
+            ? Text('Choose category')
+            : Text('insert data'),
+      );
+
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Colors.white,
-        floatingActionButton: CATEGORIES.indexOf(_selectedCategory) > 1
-            ? FloatingActionButton.extended(
-                onPressed: () {},
-                backgroundColor: Color(0xff5564E8),
-                //onPressed: () => _buildNewItemScreen(),
-                icon: Icon(
-                  Icons.add,
-                ),
-                label: Text(
-                  'Nuovo',
-                ),
-              )
-            : null,
-        /*appBar: AppBar(
-          title: Container(
-            color: Color(0xffF44235),
-            height: 40,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-            ),
-            child: MaterialButton(
-              hoverColor: Colors.black.withOpacity(
-                0.1,
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  10,
-                ),
-              ),
-              onPressed: () => setState(
-                () => _selectedCategory = CATEGORIES[0],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    'assets/images/ship_icon_white.png',
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Text(
-                    'Paperopoli Terminal',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => setState(
+            () => _inCreatingMode = true,
           ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                Icons.account_circle_outlined,
-              ),
-              onPressed: () async {
-                printWrapped(
-                  await FirebaseAuth.instance.currentUser!.getIdToken(),
-                );
-              }, //TODO
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-              ),
-              child: IconButton(
-                icon: Icon(
-                  Ionicons.power,
-                ),
-                onPressed: () async => await showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text(
-                      'Logout',
-                    ),
-                    content: Text(
-                      'Vuoi davverro effetuare il logout?',
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(
-                          context,
-                          false,
-                        ),
-                        child: Text(
-                          'Annulla',
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(
-                          context,
-                          true,
-                        ),
-                        child: Text(
-                          'Logout',
-                        ),
-                      ),
-                    ],
-                  ),
-                ).then(
-                  (value) async => value
-                      ? await context.read<AuthenticationCubit>().logOut()
-                      : {},
-                ),
-              ),
-            ),
-          ],
+          backgroundColor: Color(0xff5564E8),
+          child: Icon(
+            Icons.add,
+          ),
         ),
-        */
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
@@ -388,7 +293,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            _buildMainWidget(),
+            AnimatedSwitcher(
+              duration: Duration(
+                milliseconds: 500,
+              ),
+              child:
+                  _inCreatingMode ? _buildCreateWidget() : _buildMainWidget(),
+            ),
           ],
         ),
       );

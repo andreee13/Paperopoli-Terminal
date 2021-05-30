@@ -6,13 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:lottie/lottie.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/cubits/trips/trips_cubit.dart';
 import 'package:paperopoli_terminal/data/models/operation/operation_model.dart';
 import 'package:paperopoli_terminal/data/models/operation/operation_status.dart';
 import 'package:paperopoli_terminal/data/models/trip/trip_model.dart';
 import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
+
+import '../loading_indicator.dart';
 
 class DashboardWidget extends StatefulWidget {
   @override
@@ -35,7 +36,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     _fetch();
   }
 
-  void _fetch() => context.read<TripsCubit>().fetch(
+  Future _fetch() async => await context.read<TripsCubit>().fetch(
         user: HomeScreen.of(context)!.getUser(),
       );
 
@@ -57,7 +58,10 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     BuildContext context,
     int index,
   ) =>
-      checkDate(_trips[index]) != 0
+      checkDate(
+                _trips[index],
+              ) !=
+              0
           ? Container(
               padding: const EdgeInsets.fromLTRB(
                 24,
@@ -351,7 +355,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     MaterialButton(
-                                      onPressed: () {},
+                                      onPressed: () async => await _fetch(),
                                       elevation: 0,
                                       padding: const EdgeInsets.all(16),
                                       hoverElevation: 0,
@@ -359,7 +363,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                       shape: CircleBorder(),
                                       color: Color(0xffF9F9F9),
                                       child: Icon(
-                                        Icons.add,
+                                        Icons.refresh,
                                         color: Color(0xff333333),
                                         size: 26,
                                       ),
@@ -1052,13 +1056,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 ),
               );
             } else if (tripState is TripsInitial || tripState is TripsLoading) {
-              return Center(
-                child: Lottie.network(
-                  'https://assets7.lottiefiles.com/packages/lf20_ikj1qt.json',
-                  height: 100,
-                  width: 100,
-                ),
-              );
+              return LoadingIndicator();
             } else {
               return Center(
                 child: Row(

@@ -7,7 +7,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 import 'package:paperopoli_terminal/cubits/goods/goods_cubit.dart';
 import 'package:paperopoli_terminal/cubits/operations/operations_cubit.dart';
 import 'package:paperopoli_terminal/cubits/ships/ships_cubit.dart';
@@ -24,6 +23,7 @@ import 'cubits/authentication/authentication_cubit.dart';
 import 'data/repositories/user_repository.dart';
 import 'presentation/screens/authentication_screen.dart';
 import 'presentation/screens/home_screen.dart';
+import 'presentation/widgets/loading_indicator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -115,13 +115,7 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
             } else if (state is AuthenticationLogged) {
               return HomeScreen();
             } else {
-              return Center(
-                child: Lottie.network(
-                  'https://assets7.lottiefiles.com/packages/lf20_ikj1qt.json',
-                  height: 100,
-                  width: 100,
-                ),
-              );
+              return LoadingIndicator();
             }
           },
         ),

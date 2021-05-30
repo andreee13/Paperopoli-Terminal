@@ -1,15 +1,22 @@
+import 'dart:convert';
+import 'dart:html';
+
+import 'package:flash/flash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:lottie/lottie.dart';
+import 'package:paperopoli_terminal/core/services/server_service.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/core/utils/packages/flutter-countup/lib/countup.dart';
 import 'package:paperopoli_terminal/cubits/trips/trips_cubit.dart';
+import 'package:paperopoli_terminal/data/models/quay/quay_model.dart';
 import 'package:paperopoli_terminal/data/models/trip/trip_model.dart';
 import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
+
+import '../loading_indicator.dart';
 
 class TripsWidget extends StatefulWidget {
   @override
@@ -20,6 +27,7 @@ class _TripsWidgetState extends State<TripsWidget> {
   late List<TripModel> _trips;
   final TextEditingController _deleteTextController = TextEditingController();
   TripModel? _tripToEdit;
+  List<Quay> _quays = [];
 
   @override
   void initState() {
@@ -33,9 +41,27 @@ class _TripsWidgetState extends State<TripsWidget> {
     super.dispose();
   }
 
-  void _fetch() => context.read<TripsCubit>().fetch(
-        user: HomeScreen.of(context)!.getUser(),
-      );
+  Future _fetch() async {
+    await context.read<TripsCubit>().fetch(
+          user: HomeScreen.of(context)!.getUser(),
+        );
+    _quays = await jsonDecode(
+      await ServerService(
+        HomeScreen.of(context)!.getUser(),
+      ).fetchQuays().then(
+            (value) => value.body,
+          ),
+    )
+        .map<Quay>(
+          (
+            item,
+          ) =>
+              Quay.fromJson(
+            item,
+          ),
+        )
+        .toList();
+  }
 
   InputDecoration _getInputDecoration(
     String hintText,
@@ -154,9 +180,13 @@ class _TripsWidgetState extends State<TripsWidget> {
             end: Offset.zero,
           ).animate(animation),
           child: GestureDetector(
-            onTap: () => setState(() {
-              _tripToEdit = _trips[index];
-            }),
+            onTap: () => setState(
+              () {
+                _tripToEdit = TripModel.deepCopy(
+                  _trips[index],
+                );
+              },
+            ),
             child: Container(
               padding: const EdgeInsets.fromLTRB(
                 24,
@@ -221,8 +251,10 @@ class _TripsWidgetState extends State<TripsWidget> {
                                           ),
                                         ),
                                         TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
+                                          onPressed: () => Navigator.pop(
+                                            context,
+                                            _deleteTextController.text,
+                                          ),
                                           child: Text(
                                             'ELIMINA',
                                             style: TextStyle(
@@ -261,6 +293,12 @@ class _TripsWidgetState extends State<TripsWidget> {
                                         ),
                                       ),
                                     ),
+                                  ).then(
+                                    (value) => value != null
+                                        ? _deleteTrip(
+                                            _trips[index],
+                                          )
+                                        : {},
                                   );
                                 default:
                                   break;
@@ -302,6 +340,723 @@ class _TripsWidgetState extends State<TripsWidget> {
         ),
       );
 
+  Widget _buildAllTripsWidget() => Column(
+        key: ValueKey('Column 1'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              bottom: 40,
+            ),
+            child: TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(
+                  Ionicons.search,
+                  color: Colors.grey.shade400,
+                ),
+                hintText: 'Cerca viaggi',
+                contentPadding: const EdgeInsets.fromLTRB(
+                  16,
+                  16,
+                  16,
+                  0,
+                ),
+                hintStyle: TextStyle(
+                  color: Colors.grey.shade400,
+                ),
+                border: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.grey.shade200,
+                    width: 1,
+                  ),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.grey.shade200,
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.grey.shade200,
+                    width: 1,
+                  ),
+                ),
+                focusedErrorBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.grey.shade200,
+                    width: 1,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Countup(
+                    begin: 0,
+                    end: _trips.length.toDouble(),
+                    duration: Duration(
+                      seconds: 1,
+                    ),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xff262539),
+                      fontSize: 40,
+                    ),
+                  ),
+                  Text(
+                    ' Viaggi',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xff262539),
+                      fontSize: 40,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  MaterialButton(
+                    onPressed: () => context.read<TripsCubit>().fetch(
+                          user: HomeScreen.of(context)!.getUser(),
+                        ),
+                    elevation: 0,
+                    padding: const EdgeInsets.all(16),
+                    hoverElevation: 0,
+                    highlightElevation: 0,
+                    shape: CircleBorder(),
+                    color: Color(0xffF9F9F9),
+                    child: Icon(
+                      Icons.refresh,
+                      color: Color(0xff333333),
+                      size: 26,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      size: 20,
+                      color: Color(0xff333333),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 20,
+                      color: Color(0xff333333),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 48,
+            ),
+            child: LiveGrid(
+              shrinkWrap: true,
+              showItemDuration: Duration(
+                milliseconds: 300,
+              ),
+              showItemInterval: Duration(
+                microseconds: 200,
+              ),
+              itemCount: _trips.length,
+              itemBuilder: _tripsBuilder,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                childAspectRatio: 2,
+              ),
+            ),
+          ),
+        ],
+      );
+
+  Widget _buildTripToEditWidget() => Column(
+        key: ValueKey('Column 2'),
+        children: [
+          Row(
+            children: [
+              MaterialButton(
+                onPressed: () => setState(
+                  () => _tripToEdit = null,
+                ),
+                elevation: 0,
+                padding: const EdgeInsets.all(16),
+                hoverElevation: 0,
+                highlightElevation: 0,
+                shape: CircleBorder(),
+                color: Color(0xffF9F9F9),
+                child: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Color(0xff333333),
+                  size: 24,
+                ),
+              ),
+              SizedBox(
+                width: 16,
+              ),
+              Text(
+                'Viaggio #${_tripToEdit!.id}',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xff262539),
+                  fontSize: 40,
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 64,
+              left: 32,
+            ),
+            child: GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              childAspectRatio: 10,
+              mainAxisSpacing: 0,
+              crossAxisSpacing: 0,
+              children: [
+                Text(
+                  'ID',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade600,
+                    fontSize: 18,
+                  ),
+                ),
+                Text(
+                  _tripToEdit!.id.toString(),
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                Text(
+                  'Banchina',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade600,
+                    fontSize: 18,
+                  ),
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DropdownButton<int>(
+                      value: _tripToEdit!.quay.id,
+                      onChanged: (value) => setState(
+                        () => _tripToEdit!.quay = _quays
+                            .where(
+                              (element) => element.id == value,
+                            )
+                            .first,
+                      ),
+                      items: _quays
+                          .map(
+                            (e) => DropdownMenuItem<int>(
+                              value: e.id,
+                              child: Text(
+                                e.description,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ],
+                ),
+                /*Text(
+                  '${_tripToEdit!.quay.id} - ${_tripToEdit!.quay.description}',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),*/
+                Text(
+                  'Arrivo previsto',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade600,
+                    fontSize: 18,
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MaterialButton(
+                      onPressed: () => showDatePicker(
+                        context: context,
+                        initialDate: _tripToEdit!.time.expectedArrivalTime,
+                        firstDate: DateTime(2021),
+                        lastDate: DateTime(2050),
+                      ),
+                      elevation: 0,
+                      highlightElevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      color: Color(0xffF9F9F9),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 16,
+                            ),
+                            child: Icon(
+                              Icons.calendar_today,
+                            ),
+                          ),
+                          Text(
+                            _tripToEdit!.time.expectedArrivalTime
+                                .toIso8601String()
+                                .substring(0, 10),
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 24,
+                    ),
+                    MaterialButton(
+                      onPressed: () => showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(
+                          _tripToEdit!.time.expectedArrivalTime,
+                        ),
+                      ),
+                      elevation: 0,
+                      highlightElevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      color: Color(0xffF9F9F9),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 16,
+                            ),
+                            child: Icon(
+                              Icons.schedule,
+                            ),
+                          ),
+                          Text(
+                            _tripToEdit!.time.expectedArrivalTime
+                                .toIso8601String()
+                                .substring(11, 19),
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  'Arrivo effettivo',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade600,
+                    fontSize: 18,
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MaterialButton(
+                      onPressed: () => showDatePicker(
+                        context: context,
+                        initialDate: _tripToEdit!.time.expectedArrivalTime,
+                        firstDate: DateTime(2021),
+                        lastDate: DateTime(2050),
+                      ),
+                      elevation: 0,
+                      highlightElevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      color: Color(0xffF9F9F9),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 16,
+                            ),
+                            child: Icon(
+                              Icons.calendar_today,
+                            ),
+                          ),
+                          Text(
+                            _tripToEdit!.time.actualArrivalTime
+                                .toIso8601String()
+                                .substring(0, 10),
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 24,
+                    ),
+                    MaterialButton(
+                      onPressed: () => showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(
+                          _tripToEdit!.time.actualArrivalTime,
+                        ),
+                      ),
+                      elevation: 0,
+                      highlightElevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      color: Color(0xffF9F9F9),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 16,
+                            ),
+                            child: Icon(
+                              Icons.schedule,
+                            ),
+                          ),
+                          Text(
+                            _tripToEdit!.time.actualArrivalTime
+                                .toIso8601String()
+                                .substring(11, 19),
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  'Partenza prevista',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade600,
+                    fontSize: 18,
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MaterialButton(
+                      onPressed: () => showDatePicker(
+                        context: context,
+                        initialDate: _tripToEdit!.time.expectedDepartureTime,
+                        firstDate: DateTime(2021),
+                        lastDate: DateTime(2050),
+                      ),
+                      elevation: 0,
+                      highlightElevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      color: Color(0xffF9F9F9),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 16,
+                            ),
+                            child: Icon(
+                              Icons.calendar_today,
+                            ),
+                          ),
+                          Text(
+                            _tripToEdit!.time.expectedDepartureTime
+                                .toIso8601String()
+                                .substring(0, 10),
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 24,
+                    ),
+                    MaterialButton(
+                      onPressed: () => showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(
+                          _tripToEdit!.time.expectedDepartureTime,
+                        ),
+                      ),
+                      elevation: 0,
+                      highlightElevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      color: Color(0xffF9F9F9),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 16,
+                            ),
+                            child: Icon(
+                              Icons.schedule,
+                            ),
+                          ),
+                          Text(
+                            _tripToEdit!.time.expectedDepartureTime
+                                .toIso8601String()
+                                .substring(11, 19),
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  'Partenza effettiva',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade600,
+                    fontSize: 18,
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MaterialButton(
+                      onPressed: () => showDatePicker(
+                        context: context,
+                        initialDate: _tripToEdit!.time.expectedArrivalTime,
+                        firstDate: DateTime(2021),
+                        lastDate: DateTime(2050),
+                      ),
+                      elevation: 0,
+                      highlightElevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      color: Color(0xffF9F9F9),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 16,
+                            ),
+                            child: Icon(
+                              Icons.calendar_today,
+                            ),
+                          ),
+                          Text(
+                            _tripToEdit!.time.actualDepartureTime
+                                .toIso8601String()
+                                .substring(0, 10),
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 24,
+                    ),
+                    MaterialButton(
+                      onPressed: () => showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(
+                          _tripToEdit!.time.actualDepartureTime,
+                        ),
+                      ),
+                      elevation: 0,
+                      highlightElevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      color: Color(0xffF9F9F9),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 16,
+                            ),
+                            child: Icon(
+                              Icons.schedule,
+                            ),
+                          ),
+                          Text(
+                            _tripToEdit!.time.actualDepartureTime
+                                .toIso8601String()
+                                .substring(11, 19),
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 8,
+                        right: 16,
+                      ),
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(60),
+                        ),
+                        elevation: 0,
+                        highlightElevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 24,
+                        ),
+                        color: Theme.of(context).accentColor.withOpacity(0.8),
+                        onPressed: () => _editTrip(),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Ionicons.save_outline,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Text(
+                              'Salva',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+
+  Future _editTrip() async => await ServerService(
+        HomeScreen.of(context)!.getUser(),
+      )
+          .editTrip(
+            _tripToEdit!,
+          )
+          .then(
+            (value) async => value.statusCode == HttpStatus.ok
+                ? await _fetch().then(
+                    (value) {
+                      setState(() {
+                        _tripToEdit = null;
+                      });
+                      return context.showInfoBar(
+                        content: Text(
+                          'Viaggio aggiornato',
+                        ),
+                      );
+                    },
+                  )
+                : context.showErrorBar(
+                    content: Text(
+                      'Si è verificato un errore',
+                    ),
+                  ),
+          );
+
+  Future _deleteTrip(
+    TripModel tripModel,
+  ) async =>
+      await ServerService(
+        HomeScreen.of(context)!.getUser(),
+      )
+          .deleteTrip(
+            tripModel,
+          )
+          .then(
+            (value) async => value.statusCode == HttpStatus.ok
+                ? await _fetch().then(
+                    (value) => context.showInfoBar(
+                      content: Text(
+                        'Viaggio eliminato',
+                      ),
+                    ),
+                  )
+                : context.showErrorBar(
+                    content: Text(
+                      'Si è verificato un errore',
+                    ),
+                  ),
+          );
+
   @override
   Widget build(BuildContext context) => Expanded(
         child: BlocBuilder<TripsCubit, TripsState>(
@@ -321,713 +1076,13 @@ class _TripsWidgetState extends State<TripsWidget> {
                       milliseconds: 500,
                     ),
                     child: _tripToEdit == null
-                        ? Column(
-                            key: ValueKey('Column 1'),
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  bottom: 40,
-                                ),
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    prefixIcon: Icon(
-                                      Ionicons.search,
-                                      color: Colors.grey.shade400,
-                                    ),
-                                    hintText: 'Cerca viaggi',
-                                    contentPadding: const EdgeInsets.fromLTRB(
-                                      16,
-                                      16,
-                                      16,
-                                      0,
-                                    ),
-                                    hintStyle: TextStyle(
-                                      color: Colors.grey.shade400,
-                                    ),
-                                    border: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.grey.shade200,
-                                        width: 1,
-                                      ),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.grey.shade200,
-                                        width: 1,
-                                      ),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.grey.shade200,
-                                        width: 1,
-                                      ),
-                                    ),
-                                    focusedErrorBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.grey.shade200,
-                                        width: 1,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Countup(
-                                        begin: 0,
-                                        end: _trips.length.toDouble(),
-                                        duration: Duration(
-                                          seconds: 1,
-                                        ),
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          color: Color(0xff262539),
-                                          fontSize: 40,
-                                        ),
-                                      ),
-                                      Text(
-                                        ' Viaggi',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          color: Color(0xff262539),
-                                          fontSize: 40,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      MaterialButton(
-                                        onPressed: () {},
-                                        elevation: 0,
-                                        padding: const EdgeInsets.all(16),
-                                        hoverElevation: 0,
-                                        highlightElevation: 0,
-                                        shape: CircleBorder(),
-                                        color: Color(0xffF9F9F9),
-                                        child: Icon(
-                                          Icons.add,
-                                          color: Color(0xff333333),
-                                          size: 26,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          Icons.arrow_back_ios,
-                                          size: 20,
-                                          color: Color(0xff333333),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {},
-                                        padding: EdgeInsets.zero,
-                                        icon: Icon(
-                                          Icons.arrow_forward_ios,
-                                          size: 20,
-                                          color: Color(0xff333333),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 48,
-                                ),
-                                child: LiveGrid(
-                                  shrinkWrap: true,
-                                  showItemDuration: Duration(
-                                    milliseconds: 300,
-                                  ),
-                                  showItemInterval: Duration(
-                                    microseconds: 200,
-                                  ),
-                                  itemCount: _trips.length,
-                                  itemBuilder: _tripsBuilder,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 4,
-                                    childAspectRatio: 2,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : FutureBuilder(
-                            future: Future.delayed(
-                              Duration(
-                                milliseconds: 500,
-                              ),
-                            ),
-                            builder: (context, snapshot) => snapshot
-                                        .connectionState ==
-                                    ConnectionState.done
-                                ? Column(
-                                    key: ValueKey('Column 2'),
-                                    children: [
-                                      Row(
-                                        children: [
-                                          MaterialButton(
-                                            onPressed: () => setState(
-                                              () => _tripToEdit = null,
-                                            ),
-                                            elevation: 0,
-                                            padding: const EdgeInsets.all(16),
-                                            hoverElevation: 0,
-                                            highlightElevation: 0,
-                                            shape: CircleBorder(),
-                                            color: Color(0xffF9F9F9),
-                                            child: Icon(
-                                              Icons.arrow_back_ios_new,
-                                              color: Color(0xff333333),
-                                              size: 24,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 16,
-                                          ),
-                                          Text(
-                                            'Viaggio #${_tripToEdit!.id}',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              color: Color(0xff262539),
-                                              fontSize: 40,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 64,
-                                          left: 32,
-                                        ),
-                                        child: GridView.count(
-                                          shrinkWrap: true,
-                                          crossAxisCount: 2,
-                                          childAspectRatio: 10,
-                                          mainAxisSpacing: 0,
-                                          crossAxisSpacing: 0,
-                                          children: [
-                                            Text(
-                                              'ID',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey.shade600,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Text(
-                                              _tripToEdit!.id.toString(),
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Banchina',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey.shade600,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Text(
-                                              _tripToEdit!.quay.description,
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Arrivo previsto',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey.shade600,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                MaterialButton(
-                                                  onPressed: () =>
-                                                      showDatePicker(
-                                                    context: context,
-                                                    initialDate: _tripToEdit!
-                                                        .time
-                                                        .expectedArrivalTime,
-                                                    firstDate: _tripToEdit!.time
-                                                        .expectedArrivalTime,
-                                                    lastDate: _tripToEdit!.time
-                                                        .expectedDepartureTime,
-                                                  ),
-                                                  elevation: 0,
-                                                  highlightElevation: 0,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 12,
-                                                    horizontal: 24,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  color: Color(0xffF9F9F9),
-                                                  child: Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          right: 16,
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.calendar_today,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        _tripToEdit!.time
-                                                            .expectedArrivalTime
-                                                            .toIso8601String()
-                                                            .substring(0, 10),
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 24,
-                                                ),
-                                                MaterialButton(
-                                                  onPressed: () =>
-                                                      showTimePicker(
-                                                    context: context,
-                                                    initialTime:
-                                                        TimeOfDay.fromDateTime(
-                                                      _tripToEdit!.time
-                                                          .expectedArrivalTime,
-                                                    ),
-                                                  ),
-                                                  elevation: 0,
-                                                  highlightElevation: 0,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 12,
-                                                    horizontal: 24,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  color: Color(0xffF9F9F9),
-                                                  child: Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          right: 16,
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.schedule,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        _tripToEdit!.time
-                                                            .expectedArrivalTime
-                                                            .toIso8601String()
-                                                            .substring(11, 19),
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Text(
-                                              'Arrivo effettivo',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey.shade600,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                MaterialButton(
-                                                  onPressed: () =>
-                                                      showDatePicker(
-                                                    context: context,
-                                                    initialDate: _tripToEdit!
-                                                        .time
-                                                        .expectedArrivalTime,
-                                                    firstDate: _tripToEdit!
-                                                        .time.actualArrivalTime,
-                                                    lastDate: _tripToEdit!
-                                                        .time.actualArrivalTime,
-                                                  ),
-                                                  elevation: 0,
-                                                  highlightElevation: 0,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 12,
-                                                    horizontal: 24,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  color: Color(0xffF9F9F9),
-                                                  child: Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          right: 16,
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.calendar_today,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        _tripToEdit!.time
-                                                            .actualArrivalTime
-                                                            .toIso8601String()
-                                                            .substring(0, 10),
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 24,
-                                                ),
-                                                MaterialButton(
-                                                  onPressed: () =>
-                                                      showTimePicker(
-                                                    context: context,
-                                                    initialTime:
-                                                        TimeOfDay.fromDateTime(
-                                                      _tripToEdit!.time
-                                                          .actualArrivalTime,
-                                                    ),
-                                                  ),
-                                                  elevation: 0,
-                                                  highlightElevation: 0,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 12,
-                                                    horizontal: 24,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  color: Color(0xffF9F9F9),
-                                                  child: Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          right: 16,
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.schedule,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        _tripToEdit!.time
-                                                            .actualArrivalTime
-                                                            .toIso8601String()
-                                                            .substring(11, 19),
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Text(
-                                              'Partenza prevista',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey.shade600,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                MaterialButton(
-                                                  onPressed: () =>
-                                                      showDatePicker(
-                                                    context: context,
-                                                    initialDate: _tripToEdit!
-                                                        .time
-                                                        .expectedDepartureTime,
-                                                    firstDate: _tripToEdit!.time
-                                                        .expectedArrivalTime,
-                                                    lastDate: _tripToEdit!.time
-                                                        .expectedDepartureTime,
-                                                  ),
-                                                  elevation: 0,
-                                                  highlightElevation: 0,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 12,
-                                                    horizontal: 24,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  color: Color(0xffF9F9F9),
-                                                  child: Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          right: 16,
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.calendar_today,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        _tripToEdit!.time
-                                                            .expectedDepartureTime
-                                                            .toIso8601String()
-                                                            .substring(0, 10),
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 24,
-                                                ),
-                                                MaterialButton(
-                                                  onPressed: () =>
-                                                      showTimePicker(
-                                                    context: context,
-                                                    initialTime:
-                                                        TimeOfDay.fromDateTime(
-                                                      _tripToEdit!.time
-                                                          .expectedDepartureTime,
-                                                    ),
-                                                  ),
-                                                  elevation: 0,
-                                                  highlightElevation: 0,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 12,
-                                                    horizontal: 24,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  color: Color(0xffF9F9F9),
-                                                  child: Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          right: 16,
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.schedule,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        _tripToEdit!.time
-                                                            .expectedDepartureTime
-                                                            .toIso8601String()
-                                                            .substring(11, 19),
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Text(
-                                              'Partenza effettiva',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey.shade600,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                MaterialButton(
-                                                  onPressed: () =>
-                                                      showDatePicker(
-                                                    context: context,
-                                                    initialDate: _tripToEdit!
-                                                        .time
-                                                        .expectedArrivalTime,
-                                                    firstDate: _tripToEdit!.time
-                                                        .expectedArrivalTime,
-                                                    lastDate: _tripToEdit!.time
-                                                        .actualDepartureTime,
-                                                  ),
-                                                  elevation: 0,
-                                                  highlightElevation: 0,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 12,
-                                                    horizontal: 24,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  color: Color(0xffF9F9F9),
-                                                  child: Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          right: 16,
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.calendar_today,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        _tripToEdit!.time
-                                                            .actualDepartureTime
-                                                            .toIso8601String()
-                                                            .substring(0, 10),
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 24,
-                                                ),
-                                                MaterialButton(
-                                                  onPressed: () =>
-                                                      showTimePicker(
-                                                    context: context,
-                                                    initialTime:
-                                                        TimeOfDay.fromDateTime(
-                                                      _tripToEdit!.time
-                                                          .actualDepartureTime,
-                                                    ),
-                                                  ),
-                                                  elevation: 0,
-                                                  highlightElevation: 0,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 12,
-                                                    horizontal: 24,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  color: Color(0xffF9F9F9),
-                                                  child: Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          right: 16,
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.schedule,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        _tripToEdit!.time
-                                                            .actualDepartureTime
-                                                            .toIso8601String()
-                                                            .substring(11, 19),
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Center(
-                                    child: Text(
-                                      'Viaggio #${_tripToEdit!.id}',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff262539),
-                                        fontSize: 40,
-                                      ),
-                                    ),
-                                  ),
-                          ),
+                        ? _buildAllTripsWidget()
+                        : _buildTripToEditWidget(),
                   ),
                 ),
               );
             } else if (tripState is TripsLoading || tripState is TripsInitial) {
-              return Center(
-                child: Lottie.network(
-                  'https://assets7.lottiefiles.com/packages/lf20_ikj1qt.json',
-                  height: 100,
-                  width: 100,
-                ),
-              );
+              return LoadingIndicator();
             } else {
               return Center(
                 child: Row(

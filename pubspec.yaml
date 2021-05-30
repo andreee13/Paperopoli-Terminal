@@ -27,6 +27,7 @@ dependencies:
   lottie: ^1.0.1
   google_fonts: ^2.1.0
   auto_animated: ^3.0.0
+  flash: ^2.0.0
   
 dev_dependencies:
   flutter_test:

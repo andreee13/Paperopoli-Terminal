@@ -5,7 +5,7 @@ import 'package:paperopoli_terminal/data/models/trip/trip_time.dart';
 
 class TripModel {
   int id;
-  final Quay quay;
+  Quay quay;
   final TripTime time;
   final List<OperationModel> operations;
 
@@ -18,6 +18,30 @@ class TripModel {
 
   @override
   bool operator ==(Object other) => other is TripModel && other.id == id;
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'banchina': quay.id,
+        'arrivo_previsto': time.expectedArrivalTime.toIso8601String(),
+        'arrivo_effettivo': time.actualArrivalTime.toIso8601String(),
+        'partenza_prevista': time.expectedDepartureTime.toIso8601String(),
+        'partenza_effettiva': time.actualDepartureTime.toIso8601String(),
+      };
+
+  factory TripModel.deepCopy(TripModel trip) => TripModel(
+        operations: [],
+        id: trip.id,
+        quay: Quay(
+          description: trip.quay.description,
+          id: trip.quay.id,
+        ),
+        time: TripTime(
+          actualArrivalTime: trip.time.actualArrivalTime,
+          actualDepartureTime: trip.time.actualDepartureTime,
+          expectedDepartureTime: trip.time.expectedDepartureTime,
+          expectedArrivalTime: trip.time.expectedArrivalTime,
+        ),
+      );
 
   factory TripModel.fromJson(List json) {
     var _operations = <OperationModel>[];
