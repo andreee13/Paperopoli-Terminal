@@ -271,779 +271,685 @@ class _DashboardWidgetState extends State<DashboardWidget> {
       );
 
   @override
-  Widget build(BuildContext context) => Expanded(
-        child: BlocBuilder<TripsCubit, TripsState>(
-          builder: (context, tripState) {
-            if (tripState is TripsLoaded) {
-              manageTrips(tripState.trips);
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    32,
-                    32,
-                    0,
-                    32,
-                  ),
-                  child: Row(
+  Widget build(BuildContext context) => BlocBuilder<TripsCubit, TripsState>(
+    builder: (context, tripState) {
+      if (tripState is TripsLoaded) {
+        manageTrips(tripState.trips);
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              32,
+              32,
+              0,
+              32,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.51,
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.51,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 40,
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Ionicons.search,
+                              color: Colors.grey.shade400,
+                            ),
+                            hintText: 'Cosa vuoi fare?',
+                            contentPadding: const EdgeInsets.fromLTRB(
+                              16,
+                              16,
+                              16,
+                              0,
+                            ),
+                            hintStyle: TextStyle(
+                              color: Colors.grey.shade400,
+                            ),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
+                                width: 1,
+                              ),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
+                                width: 1,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
+                                width: 1,
+                              ),
+                            ),
+                            focusedErrorBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Viaggi di oggi',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xff262539),
+                              fontSize: 40,
+                            ),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              MaterialButton(
+                                onPressed: () async => await _fetch(),
+                                elevation: 0,
+                                padding: const EdgeInsets.all(16),
+                                hoverElevation: 0,
+                                highlightElevation: 0,
+                                shape: CircleBorder(),
+                                color: Color(0xffF9F9F9),
+                                child: Icon(
+                                  Icons.refresh,
+                                  color: Color(0xff333333),
+                                  size: 26,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.arrow_back_ios,
+                                  size: 20,
+                                  color: Color(0xff333333),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {},
+                                padding: EdgeInsets.zero,
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 20,
+                                  color: Color(0xff333333),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 180,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 24,
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _trips.length,
+                            itemBuilder: _tripsBuilder,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 48,
+                          bottom: 80,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: 40,
-                              ),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(
-                                    Ionicons.search,
-                                    color: Colors.grey.shade400,
-                                  ),
-                                  hintText: 'Cosa vuoi fare?',
-                                  contentPadding: const EdgeInsets.fromLTRB(
-                                    16,
-                                    16,
-                                    16,
-                                    0,
-                                  ),
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey.shade400,
-                                  ),
-                                  border: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey.shade200,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey.shade200,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey.shade200,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  focusedErrorBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey.shade200,
-                                      width: 1,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Viaggi di oggi',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xff262539),
-                                    fontSize: 40,
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    MaterialButton(
-                                      onPressed: () async => await _fetch(),
-                                      elevation: 0,
-                                      padding: const EdgeInsets.all(16),
-                                      hoverElevation: 0,
-                                      highlightElevation: 0,
-                                      shape: CircleBorder(),
-                                      color: Color(0xffF9F9F9),
-                                      child: Icon(
-                                        Icons.refresh,
-                                        color: Color(0xff333333),
-                                        size: 26,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        Icons.arrow_back_ios,
-                                        size: 20,
-                                        color: Color(0xff333333),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      padding: EdgeInsets.zero,
-                                      icon: Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 20,
-                                        color: Color(0xff333333),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 180,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 24,
-                                ),
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: _trips.length,
-                                  itemBuilder: _tripsBuilder,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: 48,
-                                bottom: 80,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Attività giornaliera',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(0xff262539),
-                                      fontSize: 24,
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffF9F9F9),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 14,
-                                      horizontal: 20,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 8,
-                                          ),
-                                          child: Text(
-                                            'Filtra',
-                                            style: TextStyle(
-                                              color: Color(0xff262539),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                        Transform.rotate(
-                                          angle: 1.5708,
-                                          child: Icon(
-                                            Icons.arrow_forward_ios,
-                                            color: Color(0xff262539),
-                                            size: 16,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                            Text(
+                              'Attività giornaliera',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xff262539),
+                                fontSize: 24,
                               ),
                             ),
                             Container(
-                              height: MediaQuery.of(context).size.width * 0.20,
+                              decoration: BoxDecoration(
+                                color: Color(0xffF9F9F9),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 14,
+                                horizontal: 20,
+                              ),
                               child: Row(
                                 children: [
-                                  Expanded(
-                                    child: LineChart(
-                                      LineChartData(
-                                        gridData: FlGridData(
-                                          show: false,
-                                        ),
-                                        titlesData: FlTitlesData(
-                                          bottomTitles: SideTitles(
-                                            getTitles: (value) =>
-                                                value.toString(),
-                                            showTitles: true,
-                                            margin: 16,
-                                            getTextStyles: (value) => TextStyle(
-                                              color: Colors.grey.shade600,
-                                            ),
-                                          ),
-                                          leftTitles: SideTitles(
-                                            getTitles: (value) =>
-                                                value.toString(),
-                                            showTitles: true,
-                                            margin: 24,
-                                            getTextStyles: (value) => TextStyle(
-                                              color: Colors.grey.shade600,
-                                            ),
-                                          ),
-                                        ),
-                                        borderData: FlBorderData(
-                                          show: false,
-                                        ),
-                                        minX: 0,
-                                        maxX: _completedOperationsChartSpots
-                                                .length
-                                                .toDouble() -
-                                            1,
-                                        minY: 0,
-                                        lineTouchData: LineTouchData(
-                                          getTouchedSpotIndicator: (barData,
-                                                  spotIndexes) =>
-                                              spotIndexes
-                                                  .map(
-                                                    (e) =>
-                                                        TouchedSpotIndicatorData(
-                                                      FlLine(
-                                                        color: Colors
-                                                            .grey.shade400,
-                                                        strokeWidth: 2,
-                                                        dashArray: [
-                                                          5,
-                                                        ],
-                                                      ),
-                                                      FlDotData(
-                                                        getDotPainter: (_, __,
-                                                                ___, ____) =>
-                                                            FlDotCirclePainter(
-                                                          color: Colors.white,
-                                                          strokeColor: Colors
-                                                              .grey.shade100,
-                                                          radius: 6,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                          touchTooltipData:
-                                              LineTouchTooltipData(
-                                            fitInsideVertically: true,
-                                            tooltipBgColor:
-                                                Colors.grey.shade100,
-                                            tooltipRoundedRadius: 25,
-                                            getTooltipItems: (touchedSpots) =>
-                                                touchedSpots
-                                                    .map(
-                                                      (touchedSpot) =>
-                                                          LineTooltipItem(
-                                                        touchedSpot.y
-                                                            .toStringAsFixed(0),
-                                                        TextStyle(
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                    )
-                                                    .toList(),
-                                          ),
-                                        ),
-                                        lineBarsData: [
-                                          LineChartBarData(
-                                            spots: _operationsCounterChartData
-                                                .map(
-                                                  (e) => FlSpot(
-                                                    _operationsCounterChartData
-                                                        .indexOf(e)
-                                                        .toDouble(),
-                                                    e.lenght.toDouble(),
-                                                  ),
-                                                )
-                                                .toList(),
-                                            isCurved: true,
-                                            colors: [
-                                              Color(0xff18293F),
-                                            ],
-                                            barWidth: 4,
-                                            isStrokeCapRound: true,
-                                            dotData: FlDotData(
-                                              show: false,
-                                            ),
-                                            belowBarData: BarAreaData(
-                                              show: true,
-                                              colors: [
-                                                Colors.white.withOpacity(0.0),
-                                                Color(0xff8CE4F4),
-                                              ],
-                                              gradientColorStops: [0.0, 0.8],
-                                              gradientFrom: Offset(0, 1),
-                                              gradientTo: Offset(0, 0),
-                                            ),
-                                          ),
-                                        ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      right: 8,
+                                    ),
+                                    child: Text(
+                                      'Filtra',
+                                      style: TextStyle(
+                                        color: Color(0xff262539),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 32,
-                                  ),
-                                  Column(
-                                    children: [
-                                      Container(
-                                        height: 180,
-                                        margin: const EdgeInsets.only(
-                                          bottom: 16,
-                                        ),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.17,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xff232343),
-                                          borderRadius:
-                                              BorderRadius.circular(24),
-                                        ),
-                                        padding: const EdgeInsets.all(24),
-                                        child: Row(
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Totale completate',
-                                                  style: TextStyle(
-                                                    color: Colors.white
-                                                        .withOpacity(0.8),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                    bottom: 8,
-                                                    top: 16,
-                                                  ),
-                                                  child: Text(
-                                                    '${(_totalCompletedOperations / _totalOperations * 100).toInt()} %',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 24,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '$_totalCompletedOperations su $_totalOperations',
-                                                  style: TextStyle(
-                                                    color: Colors.white60,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Flexible(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                  bottom: 8,
-                                                  right: 8,
-                                                  left: 24,
-                                                ),
-                                                child: LineChart(
-                                                  LineChartData(
-                                                    gridData: FlGridData(
-                                                      show: false,
-                                                    ),
-                                                    titlesData: FlTitlesData(
-                                                      bottomTitles: SideTitles(
-                                                        showTitles: false,
-                                                      ),
-                                                      leftTitles: SideTitles(
-                                                        showTitles: false,
-                                                      ),
-                                                    ),
-                                                    borderData: FlBorderData(
-                                                      show: false,
-                                                    ),
-                                                    minX: 0,
-                                                    maxX:
-                                                        _completedOperationsChartSpots
-                                                                .length
-                                                                .toDouble() -
-                                                            1,
-                                                    minY: 0,
-                                                    lineTouchData:
-                                                        LineTouchData(
-                                                      getTouchedSpotIndicator:
-                                                          (barData,
-                                                                  spotIndexes) =>
-                                                              spotIndexes
-                                                                  .map(
-                                                                    (e) =>
-                                                                        TouchedSpotIndicatorData(
-                                                                      FlLine(
-                                                                        color: Colors
-                                                                            .white54,
-                                                                        strokeWidth:
-                                                                            2,
-                                                                        dashArray: [
-                                                                          5,
-                                                                        ],
-                                                                      ),
-                                                                      FlDotData(
-                                                                        getDotPainter: (_,
-                                                                                __,
-                                                                                ___,
-                                                                                ____) =>
-                                                                            FlDotCirclePainter(
-                                                                          color:
-                                                                              Colors.white,
-                                                                          strokeColor:
-                                                                              Colors.white,
-                                                                          radius:
-                                                                              6,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                  .toList(),
-                                                      touchTooltipData:
-                                                          LineTouchTooltipData(
-                                                        fitInsideVertically:
-                                                            true,
-                                                        tooltipBgColor: Colors
-                                                            .white
-                                                            .withOpacity(0.9),
-                                                        tooltipRoundedRadius:
-                                                            25,
-                                                        getTooltipItems:
-                                                            (touchedSpots) =>
-                                                                touchedSpots
-                                                                    .map(
-                                                                      (touchedSpot) =>
-                                                                          LineTooltipItem(
-                                                                        touchedSpot
-                                                                            .y
-                                                                            .toStringAsFixed(0),
-                                                                        TextStyle(
-                                                                          color:
-                                                                              Colors.black,
-                                                                        ),
-                                                                      ),
-                                                                    )
-                                                                    .toList(),
-                                                      ),
-                                                    ),
-                                                    lineBarsData: [
-                                                      LineChartBarData(
-                                                        spots:
-                                                            _completedOperationsChartSpots,
-                                                        //isCurved: true,
-                                                        colors: [
-                                                          Colors.white70
-                                                        ],
-                                                        barWidth: 4,
-                                                        isStrokeCapRound: true,
-                                                        dotData: FlDotData(
-                                                          show: false,
-                                                        ),
-                                                        belowBarData:
-                                                            BarAreaData(
-                                                          show: true,
-                                                          colors: [
-                                                            Colors.white
-                                                                .withOpacity(
-                                                                    0.0),
-                                                            Colors.white30,
-                                                          ],
-                                                          gradientColorStops: [
-                                                            0.2,
-                                                            0.8
-                                                          ],
-                                                          gradientFrom:
-                                                              Offset(0, 1),
-                                                          gradientTo:
-                                                              Offset(0, 0),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 180,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.17,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xff5564E8),
-                                          borderRadius:
-                                              BorderRadius.circular(24),
-                                        ),
-                                        padding: const EdgeInsets.all(24),
-                                        child: Row(
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Totale in lavorazione',
-                                                  style: TextStyle(
-                                                    color: Colors.white
-                                                        .withOpacity(0.8),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                    bottom: 8,
-                                                    top: 16,
-                                                  ),
-                                                  child: Text(
-                                                    '${(_totalWorkingOperations / _totalOperations * 100).toInt()} %',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 24,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '$_totalWorkingOperations su $_totalOperations',
-                                                  style: TextStyle(
-                                                    color: Colors.white60,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Flexible(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                  bottom: 8,
-                                                  right: 8,
-                                                  left: 24,
-                                                ),
-                                                child: LineChart(
-                                                  LineChartData(
-                                                    gridData: FlGridData(
-                                                      show: false,
-                                                    ),
-                                                    titlesData: FlTitlesData(
-                                                      bottomTitles: SideTitles(
-                                                        showTitles: false,
-                                                      ),
-                                                      leftTitles: SideTitles(
-                                                        showTitles: false,
-                                                      ),
-                                                    ),
-                                                    borderData: FlBorderData(
-                                                      show: false,
-                                                    ),
-                                                    minX: 0,
-                                                    maxX:
-                                                        _workingOperationsChartSpots
-                                                                .length
-                                                                .toDouble() -
-                                                            1,
-                                                    minY: 0,
-                                                    lineTouchData:
-                                                        LineTouchData(
-                                                      getTouchedSpotIndicator:
-                                                          (barData,
-                                                                  spotIndexes) =>
-                                                              spotIndexes
-                                                                  .map(
-                                                                    (e) =>
-                                                                        TouchedSpotIndicatorData(
-                                                                      FlLine(
-                                                                        color: Colors
-                                                                            .white54,
-                                                                        strokeWidth:
-                                                                            2,
-                                                                        dashArray: [
-                                                                          5,
-                                                                        ],
-                                                                      ),
-                                                                      FlDotData(
-                                                                        getDotPainter: (
-                                                                          _,
-                                                                          __,
-                                                                          ___,
-                                                                          ____,
-                                                                        ) =>
-                                                                            FlDotCirclePainter(
-                                                                          color:
-                                                                              Colors.white,
-                                                                          strokeColor:
-                                                                              Colors.white,
-                                                                          radius:
-                                                                              6,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                  .toList(),
-                                                      touchTooltipData:
-                                                          LineTouchTooltipData(
-                                                        fitInsideVertically:
-                                                            true,
-                                                        tooltipBgColor: Colors
-                                                            .white
-                                                            .withOpacity(0.9),
-                                                        tooltipRoundedRadius:
-                                                            25,
-                                                        getTooltipItems:
-                                                            (touchedSpots) =>
-                                                                touchedSpots
-                                                                    .map(
-                                                                      (touchedSpot) =>
-                                                                          LineTooltipItem(
-                                                                        touchedSpot
-                                                                            .y
-                                                                            .toStringAsFixed(0),
-                                                                        TextStyle(
-                                                                          color:
-                                                                              Colors.black,
-                                                                        ),
-                                                                      ),
-                                                                    )
-                                                                    .toList(),
-                                                      ),
-                                                    ),
-                                                    lineBarsData: [
-                                                      LineChartBarData(
-                                                        spots:
-                                                            _workingOperationsChartSpots,
-                                                        //isCurved: true,
-                                                        colors: [
-                                                          Colors.white70
-                                                        ],
-                                                        barWidth: 4,
-                                                        isStrokeCapRound: true,
-                                                        dotData: FlDotData(
-                                                          show: false,
-                                                        ),
-                                                        belowBarData:
-                                                            BarAreaData(
-                                                          show: true,
-                                                          colors: [
-                                                            Colors.white
-                                                                .withOpacity(
-                                                                    0.0),
-                                                            Colors.white30,
-                                                          ],
-                                                          gradientColorStops: [
-                                                            0.2,
-                                                            0.8
-                                                          ],
-                                                          gradientFrom:
-                                                              Offset(0, 1),
-                                                          gradientTo:
-                                                              Offset(0, 0),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  Transform.rotate(
+                                    angle: 1.5708,
+                                    child: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Color(0xff262539),
+                                      size: 16,
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
+                      Container(
+                        height: MediaQuery.of(context).size.width * 0.20,
+                        child: Row(
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: 16,
-                                bottom: 40,
-                              ),
-                              child: CalendarCarousel<Event>(
-                                width: MediaQuery.of(context).size.width * 0.2,
-                                height:
-                                    MediaQuery.of(context).size.width * 0.22,
-                                daysTextStyle: TextStyle(
-                                  color: Color(0xff232343),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                weekendTextStyle: TextStyle(
-                                  color: Color(0xff232343),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                weekdayTextStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xff232343),
-                                ),
-                                headerTextStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xff232343),
-                                  fontSize: 24,
-                                ),
-                                locale: 'it',
-                                markedDateWidget: Container(
-                                  width: 5,
-                                  height: 5,
-                                  margin: const EdgeInsets.fromLTRB(
-                                    0,
-                                    0,
-                                    1.5,
-                                    3,
+                            Expanded(
+                              child: LineChart(
+                                LineChartData(
+                                  gridData: FlGridData(
+                                    show: false,
                                   ),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xffFD774C)),
+                                  titlesData: FlTitlesData(
+                                    bottomTitles: SideTitles(
+                                      getTitles: (value) =>
+                                          value.toString(),
+                                      showTitles: true,
+                                      margin: 16,
+                                      getTextStyles: (value) => TextStyle(
+                                        color: Colors.grey.shade600,
+                                      ),
+                                    ),
+                                    leftTitles: SideTitles(
+                                      getTitles: (value) =>
+                                          value.toString(),
+                                      showTitles: true,
+                                      margin: 24,
+                                      getTextStyles: (value) => TextStyle(
+                                        color: Colors.grey.shade600,
+                                      ),
+                                    ),
+                                  ),
+                                  borderData: FlBorderData(
+                                    show: false,
+                                  ),
+                                  minX: 0,
+                                  maxX: _completedOperationsChartSpots
+                                          .length
+                                          .toDouble() -
+                                      1,
+                                  minY: 0,
+                                  lineTouchData: LineTouchData(
+                                    getTouchedSpotIndicator: (barData,
+                                            spotIndexes) =>
+                                        spotIndexes
+                                            .map(
+                                              (e) =>
+                                                  TouchedSpotIndicatorData(
+                                                FlLine(
+                                                  color: Colors
+                                                      .grey.shade400,
+                                                  strokeWidth: 2,
+                                                  dashArray: [
+                                                    5,
+                                                  ],
+                                                ),
+                                                FlDotData(
+                                                  getDotPainter: (_, __,
+                                                          ___, ____) =>
+                                                      FlDotCirclePainter(
+                                                    color: Colors.white,
+                                                    strokeColor: Colors
+                                                        .grey.shade100,
+                                                    radius: 6,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                    touchTooltipData:
+                                        LineTouchTooltipData(
+                                      fitInsideVertically: true,
+                                      tooltipBgColor:
+                                          Colors.grey.shade100,
+                                      tooltipRoundedRadius: 25,
+                                      getTooltipItems: (touchedSpots) =>
+                                          touchedSpots
+                                              .map(
+                                                (touchedSpot) =>
+                                                    LineTooltipItem(
+                                                  touchedSpot.y
+                                                      .toStringAsFixed(0),
+                                                  TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              )
+                                              .toList(),
+                                    ),
+                                  ),
+                                  lineBarsData: [
+                                    LineChartBarData(
+                                      spots: _operationsCounterChartData
+                                          .map(
+                                            (e) => FlSpot(
+                                              _operationsCounterChartData
+                                                  .indexOf(e)
+                                                  .toDouble(),
+                                              e.lenght.toDouble(),
+                                            ),
+                                          )
+                                          .toList(),
+                                      isCurved: true,
+                                      colors: [
+                                        Color(0xff18293F),
+                                      ],
+                                      barWidth: 4,
+                                      isStrokeCapRound: true,
+                                      dotData: FlDotData(
+                                        show: false,
+                                      ),
+                                      belowBarData: BarAreaData(
+                                        show: true,
+                                        colors: [
+                                          Colors.white.withOpacity(0.0),
+                                          Color(0xff8CE4F4),
+                                        ],
+                                        gradientColorStops: [0.0, 0.8],
+                                        gradientFrom: Offset(0, 1),
+                                        gradientTo: Offset(0, 0),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                markedDateMoreShowTotal: true,
-                                markedDateIconMaxShown: 3,
-                                markedDatesMap: EventList<Event>(
-                                  events: _mappedTrips,
-                                ),
-                                weekDayMargin: const EdgeInsets.all(0),
-                                headerMargin: const EdgeInsets.only(
-                                  bottom: 32,
-                                ),
-                                iconColor: Color(0xff232343),
-                                headerTitleTouchable: true,
-                                selectedDayButtonColor: Color(0xff232343),
-                                todayButtonColor: Color(0xff232343),
                               ),
                             ),
+                            SizedBox(
+                              width: 32,
+                            ),
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Movimentazioni recenti',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xff262539),
-                                    fontSize: 24,
+                                Container(
+                                  height: 180,
+                                  margin: const EdgeInsets.only(
+                                    bottom: 16,
+                                  ),
+                                  width:
+                                      MediaQuery.of(context).size.width *
+                                          0.17,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xff232343),
+                                    borderRadius:
+                                        BorderRadius.circular(24),
+                                  ),
+                                  padding: const EdgeInsets.all(24),
+                                  child: Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Totale completate',
+                                            style: TextStyle(
+                                              color: Colors.white
+                                                  .withOpacity(0.8),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(
+                                              bottom: 8,
+                                              top: 16,
+                                            ),
+                                            child: Text(
+                                              '${(_totalCompletedOperations / _totalOperations * 100).toInt()} %',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight:
+                                                    FontWeight.bold,
+                                                fontSize: 24,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            '$_totalCompletedOperations su $_totalOperations',
+                                            style: TextStyle(
+                                              color: Colors.white60,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Flexible(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 8,
+                                            right: 8,
+                                            left: 24,
+                                          ),
+                                          child: LineChart(
+                                            LineChartData(
+                                              gridData: FlGridData(
+                                                show: false,
+                                              ),
+                                              titlesData: FlTitlesData(
+                                                bottomTitles: SideTitles(
+                                                  showTitles: false,
+                                                ),
+                                                leftTitles: SideTitles(
+                                                  showTitles: false,
+                                                ),
+                                              ),
+                                              borderData: FlBorderData(
+                                                show: false,
+                                              ),
+                                              minX: 0,
+                                              maxX:
+                                                  _completedOperationsChartSpots
+                                                          .length
+                                                          .toDouble() -
+                                                      1,
+                                              minY: 0,
+                                              lineTouchData:
+                                                  LineTouchData(
+                                                getTouchedSpotIndicator:
+                                                    (barData,
+                                                            spotIndexes) =>
+                                                        spotIndexes
+                                                            .map(
+                                                              (e) =>
+                                                                  TouchedSpotIndicatorData(
+                                                                FlLine(
+                                                                  color: Colors
+                                                                      .white54,
+                                                                  strokeWidth:
+                                                                      2,
+                                                                  dashArray: [
+                                                                    5,
+                                                                  ],
+                                                                ),
+                                                                FlDotData(
+                                                                  getDotPainter: (_,
+                                                                          __,
+                                                                          ___,
+                                                                          ____) =>
+                                                                      FlDotCirclePainter(
+                                                                    color:
+                                                                        Colors.white,
+                                                                    strokeColor:
+                                                                        Colors.white,
+                                                                    radius:
+                                                                        6,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            )
+                                                            .toList(),
+                                                touchTooltipData:
+                                                    LineTouchTooltipData(
+                                                  fitInsideVertically:
+                                                      true,
+                                                  tooltipBgColor: Colors
+                                                      .white
+                                                      .withOpacity(0.9),
+                                                  tooltipRoundedRadius:
+                                                      25,
+                                                  getTooltipItems:
+                                                      (touchedSpots) =>
+                                                          touchedSpots
+                                                              .map(
+                                                                (touchedSpot) =>
+                                                                    LineTooltipItem(
+                                                                  touchedSpot
+                                                                      .y
+                                                                      .toStringAsFixed(0),
+                                                                  TextStyle(
+                                                                    color:
+                                                                        Colors.black,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                              .toList(),
+                                                ),
+                                              ),
+                                              lineBarsData: [
+                                                LineChartBarData(
+                                                  spots:
+                                                      _completedOperationsChartSpots,
+                                                  //isCurved: true,
+                                                  colors: [
+                                                    Colors.white70
+                                                  ],
+                                                  barWidth: 4,
+                                                  isStrokeCapRound: true,
+                                                  dotData: FlDotData(
+                                                    show: false,
+                                                  ),
+                                                  belowBarData:
+                                                      BarAreaData(
+                                                    show: true,
+                                                    colors: [
+                                                      Colors.white
+                                                          .withOpacity(
+                                                              0.0),
+                                                      Colors.white30,
+                                                    ],
+                                                    gradientColorStops: [
+                                                      0.2,
+                                                      0.8
+                                                    ],
+                                                    gradientFrom:
+                                                        Offset(0, 1),
+                                                    gradientTo:
+                                                        Offset(0, 0),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Container(
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.25,
+                                  height: 180,
                                   width:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  padding: const EdgeInsets.only(
-                                    top: 32,
+                                      MediaQuery.of(context).size.width *
+                                          0.17,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xff5564E8),
+                                    borderRadius:
+                                        BorderRadius.circular(24),
                                   ),
-                                  child: ListView.builder(
-                                    itemCount: 10,
-                                    itemBuilder: _recentOperationsBuilder,
+                                  padding: const EdgeInsets.all(24),
+                                  child: Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Totale in lavorazione',
+                                            style: TextStyle(
+                                              color: Colors.white
+                                                  .withOpacity(0.8),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(
+                                              bottom: 8,
+                                              top: 16,
+                                            ),
+                                            child: Text(
+                                              '${(_totalWorkingOperations / _totalOperations * 100).toInt()} %',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight:
+                                                    FontWeight.bold,
+                                                fontSize: 24,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            '$_totalWorkingOperations su $_totalOperations',
+                                            style: TextStyle(
+                                              color: Colors.white60,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Flexible(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 8,
+                                            right: 8,
+                                            left: 24,
+                                          ),
+                                          child: LineChart(
+                                            LineChartData(
+                                              gridData: FlGridData(
+                                                show: false,
+                                              ),
+                                              titlesData: FlTitlesData(
+                                                bottomTitles: SideTitles(
+                                                  showTitles: false,
+                                                ),
+                                                leftTitles: SideTitles(
+                                                  showTitles: false,
+                                                ),
+                                              ),
+                                              borderData: FlBorderData(
+                                                show: false,
+                                              ),
+                                              minX: 0,
+                                              maxX:
+                                                  _workingOperationsChartSpots
+                                                          .length
+                                                          .toDouble() -
+                                                      1,
+                                              minY: 0,
+                                              lineTouchData:
+                                                  LineTouchData(
+                                                getTouchedSpotIndicator:
+                                                    (barData,
+                                                            spotIndexes) =>
+                                                        spotIndexes
+                                                            .map(
+                                                              (e) =>
+                                                                  TouchedSpotIndicatorData(
+                                                                FlLine(
+                                                                  color: Colors
+                                                                      .white54,
+                                                                  strokeWidth:
+                                                                      2,
+                                                                  dashArray: [
+                                                                    5,
+                                                                  ],
+                                                                ),
+                                                                FlDotData(
+                                                                  getDotPainter: (
+                                                                    _,
+                                                                    __,
+                                                                    ___,
+                                                                    ____,
+                                                                  ) =>
+                                                                      FlDotCirclePainter(
+                                                                    color:
+                                                                        Colors.white,
+                                                                    strokeColor:
+                                                                        Colors.white,
+                                                                    radius:
+                                                                        6,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            )
+                                                            .toList(),
+                                                touchTooltipData:
+                                                    LineTouchTooltipData(
+                                                  fitInsideVertically:
+                                                      true,
+                                                  tooltipBgColor: Colors
+                                                      .white
+                                                      .withOpacity(0.9),
+                                                  tooltipRoundedRadius:
+                                                      25,
+                                                  getTooltipItems:
+                                                      (touchedSpots) =>
+                                                          touchedSpots
+                                                              .map(
+                                                                (touchedSpot) =>
+                                                                    LineTooltipItem(
+                                                                  touchedSpot
+                                                                      .y
+                                                                      .toStringAsFixed(0),
+                                                                  TextStyle(
+                                                                    color:
+                                                                        Colors.black,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                              .toList(),
+                                                ),
+                                              ),
+                                              lineBarsData: [
+                                                LineChartBarData(
+                                                  spots:
+                                                      _workingOperationsChartSpots,
+                                                  //isCurved: true,
+                                                  colors: [
+                                                    Colors.white70
+                                                  ],
+                                                  barWidth: 4,
+                                                  isStrokeCapRound: true,
+                                                  dotData: FlDotData(
+                                                    show: false,
+                                                  ),
+                                                  belowBarData:
+                                                      BarAreaData(
+                                                    show: true,
+                                                    colors: [
+                                                      Colors.white
+                                                          .withOpacity(
+                                                              0.0),
+                                                      Colors.white30,
+                                                    ],
+                                                    gradientColorStops: [
+                                                      0.2,
+                                                      0.8
+                                                    ],
+                                                    gradientFrom:
+                                                        Offset(0, 1),
+                                                    gradientTo:
+                                                        Offset(0, 0),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -1054,47 +960,139 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     ],
                   ),
                 ),
-              );
-            } else if (tripState is TripsInitial || tripState is TripsLoading) {
-              return LoadingIndicator();
-            } else {
-              return Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: Colors.grey.shade800,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 16,
-                      ),
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'Si è verificato un errore. ',
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 16,
+                          bottom: 40,
+                        ),
+                        child: CalendarCarousel<Event>(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          height:
+                              MediaQuery.of(context).size.width * 0.22,
+                          daysTextStyle: TextStyle(
+                            color: Color(0xff232343),
+                            fontWeight: FontWeight.bold,
+                          ),
+                          weekendTextStyle: TextStyle(
+                            color: Color(0xff232343),
+                            fontWeight: FontWeight.bold,
+                          ),
+                          weekdayTextStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff232343),
+                          ),
+                          headerTextStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff232343),
+                            fontSize: 24,
+                          ),
+                          locale: 'it',
+                          markedDateWidget: Container(
+                            width: 5,
+                            height: 5,
+                            margin: const EdgeInsets.fromLTRB(
+                              0,
+                              0,
+                              1.5,
+                              3,
                             ),
-                            TextSpan(
-                              text: 'Riprova',
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => _fetch(),
-                              style: TextStyle(
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ],
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xffFD774C)),
+                          ),
+                          markedDateMoreShowTotal: true,
+                          markedDateIconMaxShown: 3,
+                          markedDatesMap: EventList<Event>(
+                            events: _mappedTrips,
+                          ),
+                          weekDayMargin: const EdgeInsets.all(0),
+                          headerMargin: const EdgeInsets.only(
+                            bottom: 32,
+                          ),
+                          iconColor: Color(0xff232343),
+                          headerTitleTouchable: true,
+                          selectedDayButtonColor: Color(0xff232343),
+                          todayButtonColor: Color(0xff232343),
                         ),
                       ),
-                    ),
-                  ],
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Movimentazioni recenti',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xff262539),
+                              fontSize: 24,
+                            ),
+                          ),
+                          Container(
+                            height:
+                                MediaQuery.of(context).size.width * 0.25,
+                            width:
+                                MediaQuery.of(context).size.width * 0.2,
+                            padding: const EdgeInsets.only(
+                              top: 32,
+                            ),
+                            child: ListView.builder(
+                              itemCount: 10,
+                              itemBuilder: _recentOperationsBuilder,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              );
-            }
-          },
-        ),
-      );
+              ],
+            ),
+          ),
+        );
+      } else if (tripState is TripsInitial || tripState is TripsLoading) {
+        return LoadingIndicator();
+      } else {
+        return Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: Colors.grey.shade800,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                ),
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Si è verificato un errore. ',
+                      ),
+                      TextSpan(
+                        text: 'Riprova',
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _fetch(),
+                        style: TextStyle(
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    },
+  );
 }
 
 class OperationsChartData {

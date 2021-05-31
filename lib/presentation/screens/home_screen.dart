@@ -10,7 +10,12 @@ import 'package:paperopoli_terminal/data/models/category_model.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/goodsWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/shipsWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/vehiclesWidget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/creation/create_good_widget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/creation/create_operation_widget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/creation/create_person_widget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/creation/create_ship_widget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/creation/create_trip_widget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/creation/create_vehicle_widget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/views/operationsWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/views/dashboardWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/views/tripsWidget.dart';
@@ -31,6 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _inCreatingMode = false;
   final List<Widget> _routes = [
     CreateTripWidget(),
+    CreateOperationWidget(),
+    CreateShipWidget(),
+    CreateGoodWidget(),
+    CreatePersonWidget(),
+    CreateVehicleWidget(),
   ];
 
   User getUser() =>
@@ -44,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSeparator(_, 5),
+                _buildSeparator(_, 6),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(
                     16,
@@ -120,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
     BuildContext _,
     int index,
   ) =>
-      index == 1 || index == 5
+      index == 2 || index == 6
           ? Center(
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -129,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   right: 32,
                 ),
                 child: Text(
-                  index == 1 ? 'CATEGORIE' : 'VISTE',
+                  index == 2 ? 'CATEGORIE' : 'VISTE',
                   style: GoogleFonts.nunito(
                     color: Colors.white70,
                     fontWeight: FontWeight.bold,
@@ -152,6 +162,8 @@ class _HomeScreenState extends State<HomeScreen> {
         return ShipsWidget();
       case 'Merci':
         return GoodsWidget();
+      case 'Persone':
+        return VehiclesWidget();
       case 'Veicoli':
         return VehiclesWidget();
       default:
@@ -165,48 +177,51 @@ class _HomeScreenState extends State<HomeScreen> {
           milliseconds: 500,
         ),
         child: _itemToCreate == null
-            ? Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _buildNewItemWidget(
-                            Icons.calendar_today_outlined,
-                            'Viaggio',
-                            _routes[0],
-                          ),
-                          _buildNewItemWidget(
-                            Icons.stacked_bar_chart_outlined,
-                            'Movimentazione',
-                            _routes[0],
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _buildNewItemWidget(
-                            Ionicons.boat_outline,
-                            'Nave',
-                            _routes[0],
-                          ),
-                          _buildNewItemWidget(
-                            Ionicons.cube,
-                            'Merce',
-                            _routes[0],
-                          ),
-                          _buildNewItemWidget(
-                            Ionicons.card_outline,
-                            'Veicolo',
-                            _routes[0],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+            ? Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildNewItemWidget(
+                          Icons.calendar_today_outlined,
+                          'Viaggio',
+                          _routes[0],
+                        ),
+                        _buildNewItemWidget(
+                          Icons.stacked_line_chart_outlined,
+                          'Movimentazione',
+                          _routes[0],
+                        ),
+                        _buildNewItemWidget(
+                          Ionicons.boat_outline,
+                          'Nave',
+                          _routes[0],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildNewItemWidget(
+                          Ionicons.cube_outline,
+                          'Merce',
+                          _routes[0],
+                        ),
+                        _buildNewItemWidget(
+                          Ionicons.people_outline,
+                          'Persona',
+                          _routes[0],
+                        ),
+                        _buildNewItemWidget(
+                          Ionicons.car_outline,
+                          'Veicolo',
+                          _routes[0],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               )
             : Text('insert data'),
@@ -217,22 +232,40 @@ class _HomeScreenState extends State<HomeScreen> {
     String title,
     Widget route,
   ) =>
-      MaterialButton(
-        onPressed: () => setState(
-          () {
-            _itemToCreate = Object(); //TODO
-            _inCreatingMode = true;
-          },
-        ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-            ),
-            Text(
-              title,
-            ),
-          ],
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: MaterialButton(
+          minWidth: 210,
+          height: 210,
+          elevation: 0,
+          highlightElevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          color: Color(0xffF9F9F9),
+          onPressed: () => setState(
+            () {
+              _itemToCreate = Object(); //TODO
+              _inCreatingMode = true;
+            },
+          ),
+          child: Column(
+            children: [
+              Icon(
+                icon,
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
         ),
       );
 

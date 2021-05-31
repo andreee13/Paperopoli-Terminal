@@ -56,6 +56,14 @@ const List<CategoryModel> CATEGORIES = [
     ],
   ),
   CategoryModel(
+    name: 'Persone',
+    mainIcon: Ionicons.people_outline,
+    icons: [
+      Icons.done,
+      Icons.close,
+    ],
+  ),
+  CategoryModel(
     name: 'Veicoli',
     mainIcon: Ionicons.car_outline,
     icons: [
