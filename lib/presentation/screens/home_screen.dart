@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
 import 'package:paperopoli_terminal/cubits/authentication/authentication_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:paperopoli_terminal/data/models/category_model.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/goodsWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/shipsWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/vehiclesWidget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/creation/create_trip_widget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/views/operationsWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/views/dashboardWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/views/tripsWidget.dart';
@@ -27,6 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
   CategoryModel _selectedCategory = CATEGORIES[0];
   Object? _itemToCreate;
   bool _inCreatingMode = false;
+  final List<Widget> _routes = [
+    CreateTripWidget(),
+  ];
 
   User getUser() =>
       (context.read<AuthenticationCubit>().state as AuthenticationLogged).user!;
@@ -67,6 +72,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     selectedTileColor: Colors.white10,
                     onTap: () {
                       setState(() {
+                        _itemToCreate = null;
+                        _inCreatingMode = false;
                         _selectedCategory = CATEGORIES[index];
                       });
                     },
@@ -101,6 +108,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 selectedTileColor: Colors.white10,
                 onTap: () {
                   setState(() {
+                    _itemToCreate = null;
+                    _inCreatingMode = false;
                     _selectedCategory = CATEGORIES[index];
                   });
                 },
@@ -156,8 +165,75 @@ class _HomeScreenState extends State<HomeScreen> {
           milliseconds: 500,
         ),
         child: _itemToCreate == null
-            ? Text('Choose category')
+            ? Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildNewItemWidget(
+                            Icons.calendar_today_outlined,
+                            'Viaggio',
+                            _routes[0],
+                          ),
+                          _buildNewItemWidget(
+                            Icons.stacked_bar_chart_outlined,
+                            'Movimentazione',
+                            _routes[0],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildNewItemWidget(
+                            Ionicons.boat_outline,
+                            'Nave',
+                            _routes[0],
+                          ),
+                          _buildNewItemWidget(
+                            Ionicons.cube,
+                            'Merce',
+                            _routes[0],
+                          ),
+                          _buildNewItemWidget(
+                            Ionicons.card_outline,
+                            'Veicolo',
+                            _routes[0],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              )
             : Text('insert data'),
+      );
+
+  Widget _buildNewItemWidget(
+    IconData icon,
+    String title,
+    Widget route,
+  ) =>
+      MaterialButton(
+        onPressed: () => setState(
+          () {
+            _itemToCreate = Object(); //TODO
+            _inCreatingMode = true;
+          },
+        ),
+        child: Column(
+          children: [
+            Icon(
+              icon,
+            ),
+            Text(
+              title,
+            ),
+          ],
+        ),
       );
 
   @override
@@ -293,12 +369,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            AnimatedSwitcher(
-              duration: Duration(
-                milliseconds: 500,
+            Expanded(
+              child: AnimatedSwitcher(
+                duration: Duration(
+                  milliseconds: 500,
+                ),
+                child:
+                    _inCreatingMode ? _buildCreateWidget() : _buildMainWidget(),
               ),
-              child:
-                  _inCreatingMode ? _buildCreateWidget() : _buildMainWidget(),
             ),
           ],
         ),

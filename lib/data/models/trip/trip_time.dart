@@ -1,8 +1,8 @@
 class TripTime {
-  final DateTime expectedDepartureTime;
-  final DateTime expectedArrivalTime;
-  late DateTime actualDepartureTime;
-  late DateTime actualArrivalTime;
+  DateTime expectedDepartureTime;
+  DateTime expectedArrivalTime;
+  DateTime actualDepartureTime;
+  DateTime actualArrivalTime;
 
   TripTime({
     required this.expectedDepartureTime,

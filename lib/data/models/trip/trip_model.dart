@@ -6,7 +6,7 @@ import 'package:paperopoli_terminal/data/models/trip/trip_time.dart';
 class TripModel {
   int id;
   Quay quay;
-  final TripTime time;
+  TripTime time;
   final List<OperationModel> operations;
 
   TripModel({

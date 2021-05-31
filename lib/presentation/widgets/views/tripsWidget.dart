@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:html';
 
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -28,6 +29,14 @@ class _TripsWidgetState extends State<TripsWidget> {
   final TextEditingController _deleteTextController = TextEditingController();
   TripModel? _tripToEdit;
   List<Quay> _quays = [];
+  final TextEditingController _expectedArrivalDateController =
+      TextEditingController();
+  final TextEditingController _actualArrivalDateController =
+      TextEditingController();
+  final TextEditingController _expectedDeparturedDateController =
+      TextEditingController();
+  final TextEditingController _actualDepartureDateController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -185,6 +194,14 @@ class _TripsWidgetState extends State<TripsWidget> {
                 _tripToEdit = TripModel.deepCopy(
                   _trips[index],
                 );
+                _expectedArrivalDateController.text =
+                    _tripToEdit!.time.expectedArrivalTime.toIso8601String();
+                _expectedDeparturedDateController.text =
+                    _tripToEdit!.time.expectedDepartureTime.toIso8601String();
+                _actualArrivalDateController.text =
+                    _tripToEdit!.time.actualArrivalTime.toIso8601String();
+                _actualDepartureDateController.text =
+                    _tripToEdit!.time.actualDepartureTime.toIso8601String();
               },
             ),
             child: Container(
@@ -578,12 +595,6 @@ class _TripsWidgetState extends State<TripsWidget> {
                     ),
                   ],
                 ),
-                /*Text(
-                  '${_tripToEdit!.quay.id} - ${_tripToEdit!.quay.description}',
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),*/
                 Text(
                   'Arrivo previsto',
                   style: TextStyle(
@@ -596,83 +607,37 @@ class _TripsWidgetState extends State<TripsWidget> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MaterialButton(
-                      onPressed: () => showDatePicker(
-                        context: context,
+                    Container(
+                      height: 50,
+                      width: 250,
+                      padding: const EdgeInsets.fromLTRB(
+                        16,
+                        0,
+                        16,
+                        8,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Color(0xffF9F9F9),
+                      ),
+                      child: DateTimePicker(
+                        icon: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                          ),
+                          child: Icon(
+                            Icons.calendar_today,
+                          ),
+                        ),
                         initialDate: _tripToEdit!.time.expectedArrivalTime,
                         firstDate: DateTime(2021),
                         lastDate: DateTime(2050),
-                      ),
-                      elevation: 0,
-                      highlightElevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 24,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      color: Color(0xffF9F9F9),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 16,
-                            ),
-                            child: Icon(
-                              Icons.calendar_today,
-                            ),
-                          ),
-                          Text(
-                            _tripToEdit!.time.expectedArrivalTime
-                                .toIso8601String()
-                                .substring(0, 10),
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 24,
-                    ),
-                    MaterialButton(
-                      onPressed: () => showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.fromDateTime(
-                          _tripToEdit!.time.expectedArrivalTime,
+                        onSaved: (s) => _expectedArrivalDateController.text = s!,
+                        type: DateTimePickerType.dateTime,
+                        controller: _expectedArrivalDateController,
+                        style: TextStyle(
+                          fontSize: 18,
                         ),
-                      ),
-                      elevation: 0,
-                      highlightElevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 24,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      color: Color(0xffF9F9F9),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 16,
-                            ),
-                            child: Icon(
-                              Icons.schedule,
-                            ),
-                          ),
-                          Text(
-                            _tripToEdit!.time.expectedArrivalTime
-                                .toIso8601String()
-                                .substring(11, 19),
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                   ],
@@ -689,83 +654,37 @@ class _TripsWidgetState extends State<TripsWidget> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MaterialButton(
-                      onPressed: () => showDatePicker(
-                        context: context,
-                        initialDate: _tripToEdit!.time.expectedArrivalTime,
+                    Container(
+                      height: 50,
+                      width: 250,
+                      padding: const EdgeInsets.fromLTRB(
+                        16,
+                        0,
+                        16,
+                        8,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Color(0xffF9F9F9),
+                      ),
+                      child: DateTimePicker(
+                        icon: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                          ),
+                          child: Icon(
+                            Icons.calendar_today,
+                          ),
+                        ),
+                        initialDate: _tripToEdit!.time.actualArrivalTime,
                         firstDate: DateTime(2021),
                         lastDate: DateTime(2050),
-                      ),
-                      elevation: 0,
-                      highlightElevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 24,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      color: Color(0xffF9F9F9),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 16,
-                            ),
-                            child: Icon(
-                              Icons.calendar_today,
-                            ),
-                          ),
-                          Text(
-                            _tripToEdit!.time.actualArrivalTime
-                                .toIso8601String()
-                                .substring(0, 10),
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 24,
-                    ),
-                    MaterialButton(
-                      onPressed: () => showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.fromDateTime(
-                          _tripToEdit!.time.actualArrivalTime,
+                        type: DateTimePickerType.dateTime,
+                        onSaved: (s) => _actualArrivalDateController.text = s!,
+                        controller: _actualArrivalDateController,
+                        style: TextStyle(
+                          fontSize: 18,
                         ),
-                      ),
-                      elevation: 0,
-                      highlightElevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 24,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      color: Color(0xffF9F9F9),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 16,
-                            ),
-                            child: Icon(
-                              Icons.schedule,
-                            ),
-                          ),
-                          Text(
-                            _tripToEdit!.time.actualArrivalTime
-                                .toIso8601String()
-                                .substring(11, 19),
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                   ],
@@ -782,83 +701,37 @@ class _TripsWidgetState extends State<TripsWidget> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MaterialButton(
-                      onPressed: () => showDatePicker(
-                        context: context,
+                    Container(
+                      height: 50,
+                      width: 250,
+                      padding: const EdgeInsets.fromLTRB(
+                        16,
+                        0,
+                        16,
+                        8,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Color(0xffF9F9F9),
+                      ),
+                      child: DateTimePicker(
+                        icon: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                          ),
+                          child: Icon(
+                            Icons.calendar_today,
+                          ),
+                        ),
                         initialDate: _tripToEdit!.time.expectedDepartureTime,
                         firstDate: DateTime(2021),
                         lastDate: DateTime(2050),
-                      ),
-                      elevation: 0,
-                      highlightElevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 24,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      color: Color(0xffF9F9F9),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 16,
-                            ),
-                            child: Icon(
-                              Icons.calendar_today,
-                            ),
-                          ),
-                          Text(
-                            _tripToEdit!.time.expectedDepartureTime
-                                .toIso8601String()
-                                .substring(0, 10),
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 24,
-                    ),
-                    MaterialButton(
-                      onPressed: () => showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.fromDateTime(
-                          _tripToEdit!.time.expectedDepartureTime,
+                        type: DateTimePickerType.dateTime,
+                        onSaved: (s) => _expectedDeparturedDateController.text = s!,
+                        controller: _expectedDeparturedDateController,
+                        style: TextStyle(
+                          fontSize: 18,
                         ),
-                      ),
-                      elevation: 0,
-                      highlightElevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 24,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      color: Color(0xffF9F9F9),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 16,
-                            ),
-                            child: Icon(
-                              Icons.schedule,
-                            ),
-                          ),
-                          Text(
-                            _tripToEdit!.time.expectedDepartureTime
-                                .toIso8601String()
-                                .substring(11, 19),
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                   ],
@@ -875,83 +748,37 @@ class _TripsWidgetState extends State<TripsWidget> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MaterialButton(
-                      onPressed: () => showDatePicker(
-                        context: context,
-                        initialDate: _tripToEdit!.time.expectedArrivalTime,
+                    Container(
+                      height: 50,
+                      width: 250,
+                      padding: const EdgeInsets.fromLTRB(
+                        16,
+                        0,
+                        16,
+                        8,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Color(0xffF9F9F9),
+                      ),
+                      child: DateTimePicker(
+                        icon: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                          ),
+                          child: Icon(
+                            Icons.calendar_today,
+                          ),
+                        ),
+                        initialDate: _tripToEdit!.time.actualDepartureTime,
                         firstDate: DateTime(2021),
                         lastDate: DateTime(2050),
-                      ),
-                      elevation: 0,
-                      highlightElevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 24,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      color: Color(0xffF9F9F9),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 16,
-                            ),
-                            child: Icon(
-                              Icons.calendar_today,
-                            ),
-                          ),
-                          Text(
-                            _tripToEdit!.time.actualDepartureTime
-                                .toIso8601String()
-                                .substring(0, 10),
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 24,
-                    ),
-                    MaterialButton(
-                      onPressed: () => showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.fromDateTime(
-                          _tripToEdit!.time.actualDepartureTime,
+                        type: DateTimePickerType.dateTime,
+                        controller: _actualDepartureDateController,
+                        onSaved: (s) => _actualDepartureDateController.text = s!,
+                        style: TextStyle(
+                          fontSize: 18,
                         ),
-                      ),
-                      elevation: 0,
-                      highlightElevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 24,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      color: Color(0xffF9F9F9),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 16,
-                            ),
-                            child: Icon(
-                              Icons.schedule,
-                            ),
-                          ),
-                          Text(
-                            _tripToEdit!.time.actualDepartureTime
-                                .toIso8601String()
-                                .substring(11, 19),
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                   ],
@@ -1005,32 +832,46 @@ class _TripsWidgetState extends State<TripsWidget> {
         ],
       );
 
-  Future _editTrip() async => await ServerService(
-        HomeScreen.of(context)!.getUser(),
-      )
-          .editTrip(
-            _tripToEdit!,
-          )
-          .then(
-            (value) async => value.statusCode == HttpStatus.ok
-                ? await _fetch().then(
-                    (value) {
-                      setState(() {
-                        _tripToEdit = null;
-                      });
-                      return context.showInfoBar(
-                        content: Text(
-                          'Viaggio aggiornato',
-                        ),
-                      );
-                    },
-                  )
-                : context.showErrorBar(
-                    content: Text(
-                      'Si è verificato un errore',
-                    ),
+  Future _editTrip() async {
+    _tripToEdit!.time.expectedArrivalTime = DateTime.parse(
+      _expectedArrivalDateController.text,
+    );
+    _tripToEdit!.time.expectedDepartureTime = DateTime.parse(
+      _expectedDeparturedDateController.text,
+    );
+    _tripToEdit!.time.actualArrivalTime = DateTime.parse(
+      _actualArrivalDateController.text,
+    );
+    _tripToEdit!.time.actualDepartureTime = DateTime.parse(
+      _actualDepartureDateController.text,
+    );
+    return await ServerService(
+      HomeScreen.of(context)!.getUser(),
+    )
+        .editTrip(
+          _tripToEdit!,
+        )
+        .then(
+          (value) async => value.statusCode == HttpStatus.ok
+              ? await _fetch().then(
+                  (value) {
+                    setState(() {
+                      _tripToEdit = null;
+                    });
+                    return context.showInfoBar(
+                      content: Text(
+                        'Viaggio aggiornato',
+                      ),
+                    );
+                  },
+                )
+              : context.showErrorBar(
+                  content: Text(
+                    'Si è verificato un errore',
                   ),
-          );
+                ),
+        );
+  }
 
   Future _deleteTrip(
     TripModel tripModel,
