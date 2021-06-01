@@ -23,16 +23,22 @@ class ShipsRepository {
         (response) {
           if (response.statusCode == HttpStatus.ok ||
               response.statusCode == HttpStatus.notModified) {
-            print(response.body);
-            return jsonDecode(
-              response.body,
-            )
-                .map<ShipModel>(
-                  (item) => ShipModel.fromJson(
-                    item,
-                  ),
-                )
-                .toList();
+            var v = <ShipModel>[];
+            /*jsonDecode(response.body).forEach<Map<String, dynamic>>((value) {
+              v.add(
+                ShipModel.fromJson(
+                  value,
+                ),
+              );
+            });*/
+            jsonDecode(response.body).forEach(
+              (String k, value) => v.add(
+                ShipModel.fromJson(
+                  value,
+                ),
+              ),
+            );
+            return v;
           } else {
             throw ServerException();
           }

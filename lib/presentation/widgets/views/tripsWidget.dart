@@ -72,40 +72,6 @@ class _TripsWidgetState extends State<TripsWidget> {
         .toList();
   }
 
-  InputDecoration _getInputDecoration(
-    String hintText,
-    IconData icon,
-  ) =>
-      InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-        fillColor: Colors.grey.withOpacity(0.1),
-        filled: false,
-        hintStyle: TextStyle(
-          color: Colors.black45,
-        ),
-        hintText: hintText,
-        prefixIcon: Icon(
-          Icons.tag,
-          color: Colors.black87,
-        ),
-        border: UnderlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(7),
-          ),
-          borderSide: BorderSide(
-            color: Colors.grey,
-          ),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(7),
-          ),
-        ),
-      );
-
   Widget _getInfoWidgets(int index, TripModel trip) {
     switch (index) {
       case 0:
@@ -289,22 +255,6 @@ class _TripsWidgetState extends State<TripsWidget> {
                                           children: [
                                             Text(
                                               'Eliminando il viaggio non sarà più visibile in questa sezione e tutte le movimentazioni associate saranno rimosse dal sistema.',
-                                            ),
-                                            SizedBox(
-                                              height: 16,
-                                            ),
-                                            TextFormField(
-                                              validator: (value) => value ==
-                                                      _trips[index]
-                                                          .id
-                                                          .toString()
-                                                  ? null
-                                                  : 'Valore errato',
-                                              controller: _deleteTextController,
-                                              decoration: _getInputDecoration(
-                                                'ID',
-                                                Icons.email_outlined,
-                                              ),
                                             ),
                                           ],
                                         ),
