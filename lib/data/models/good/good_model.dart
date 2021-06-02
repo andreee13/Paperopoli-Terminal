@@ -2,9 +2,9 @@ import 'good_status.dart';
 
 class GoodModel {
   int id;
-  final String description;
-  final String type;
-  final Set<GoodStatus> status;
+  String description;
+  String type;
+  final List<GoodStatus> status;
 
   GoodModel({
     required this.id,
@@ -13,17 +13,47 @@ class GoodModel {
     required this.type,
   });
 
-  //TODO
-  factory GoodModel.fromJson(Map<String, dynamic> json) => GoodModel(
-        id: json['id'] as int,
-        description: json['descrizione'] as String,
-        type: json['tipo'],
-        status: json[0].forEach(
-          (item) => GoodStatus(
-            id: item['id'],
-            timestamp: item['timestamp'],
-            name: item['tipo'],
+  factory GoodModel.fromJson(List json) {
+    var v = <GoodStatus>[];
+    json.forEach((element) {
+      print(element);
+      v.addAll({
+        GoodStatus(
+          id: element['merce_stato_id'],
+          timestamp: DateTime.parse(
+            element['timestamp'],
           ),
-        ).toSet(),
+          name: element['nome_stato'],
+          isNew: false,
+          isDeleted: false,
+        ),
+      });
+    });
+    return GoodModel(
+      id: json.first['ID'],
+      status: v,
+      type: json.first['nome_tipo'],
+      description: json.first['descrizione'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'type': type,
+        'description': description,
+        'status': status
+            .map<Map<String, dynamic>>(
+              (e) => e.toJson(id),
+            )
+            .toList(),
+      };
+
+  factory GoodModel.deepCopy(GoodModel model) => GoodModel(
+        id: model.id,
+        status: List.from(
+          model.status,
+        ),
+        description: model.description,
+        type: model.type,
       );
 }

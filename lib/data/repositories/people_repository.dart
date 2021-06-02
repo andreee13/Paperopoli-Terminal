@@ -5,15 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:paperopoli_terminal/core/errors/exceptions.dart';
 import 'package:paperopoli_terminal/core/utils/constants.dart';
-import 'package:paperopoli_terminal/data/models/good/good_model.dart';
+import 'package:paperopoli_terminal/data/models/person/person_model.dart';
 
-class GoodsRepository {
-  Future<List<GoodModel>> fetch({
+class PeopleRepository {
+  Future<List<PersonModel>> fetch({
     required User user,
   }) async =>
       await http.get(
         Uri.parse(
-          '$TERMINAL_API_URL/goods/index',
+          '$TERMINAL_API_URL/people/index',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -22,10 +22,10 @@ class GoodsRepository {
       ).then((response) {
         if (response.statusCode == HttpStatus.ok ||
             response.statusCode == HttpStatus.notModified) {
-          var v = <GoodModel>[];
+          var v = <PersonModel>[];
           jsonDecode(response.body).forEach(
             (String k, value) => v.add(
-              GoodModel.fromJson(
+              PersonModel.fromJson(
                 value,
               ),
             ),

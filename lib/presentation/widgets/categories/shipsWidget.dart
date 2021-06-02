@@ -44,6 +44,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
   @override
   void dispose() {
     _descriptionTextController.dispose();
+    _newStateDateTimeController.dispose();
     super.dispose();
   }
 
@@ -171,9 +172,16 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                     icon: Icon(
                       Icons.delete_outline,
                     ),
-                    onPressed: () => setState(
-                      () => _shipToEdit!.status[index].isDeleted = true,
-                    ),
+                    onPressed: () => _shipToEdit!.status
+                                .where(
+                                  (element) => !element.isDeleted,
+                                )
+                                .length >
+                            1
+                        ? setState(
+                            () => _shipToEdit!.status[index].isDeleted = true,
+                          )
+                        : {},
                   ),
                 )
               : SizedBox();
@@ -349,6 +357,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                                         TextButton(
                                           onPressed: () => Navigator.pop(
                                             context,
+                                            true,
                                           ),
                                           child: Text(
                                             'ELIMINA',
@@ -373,7 +382,7 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                                       ),
                                     ),
                                   ).then(
-                                    (value) => value != null
+                                    (value) => value != null && value
                                         ? _deleteShip(
                                             _ships[index],
                                           )
@@ -735,6 +744,9 @@ class _ShipsWidgetState extends State<ShipsWidget> {
                       ),
                       child: Text(
                         'VISUALIZZA',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ],

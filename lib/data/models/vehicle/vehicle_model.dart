@@ -1,27 +1,61 @@
+import 'package:paperopoli_terminal/data/models/vehicle/vehicle_status.dart';
 
 import 'vehicle_status.dart';
 
 class VehicleModel {
+  int id;
   String plate;
-  final String type;
-  final Set<VehicleStatus> status;
+  String type;
+  final List<VehicleStatus> status;
 
   VehicleModel({
-    required this.plate,
+    required this.id,
     required this.status,
+    required this.plate,
     required this.type,
   });
 
-  //TODO
-  factory VehicleModel.fromJson(Map<String, dynamic> json) => VehicleModel(
-        plate: json['targa'] as String,
-        type: json['tipo'],
-        status: json[0].forEach(
-          (item) => VehicleStatus(
-            id: item['id'],
-            timestamp: item['timestamp'],
-            name: item['tipo'],
+  factory VehicleModel.fromJson(List json) {
+    var v = <VehicleStatus>[];
+    json.forEach((element) {
+      print(element);
+      v.addAll({
+        VehicleStatus(
+          id: element['veicolo_stato_id'],
+          timestamp: DateTime.parse(
+            element['timestamp'],
           ),
-        ).toSet(),
+          name: element['nome_stato'],
+          isNew: false,
+          isDeleted: false,
+        ),
+      });
+    });
+    return VehicleModel(
+      id: json.first['ID'],
+      status: v,
+      type: json.first['nome_tipo'],
+      plate: json.first['targa'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'type': type,
+        'plate': plate,
+        'status': status
+            .map<Map<String, dynamic>>(
+              (e) => e.toJson(id),
+            )
+            .toList(),
+      };
+
+  factory VehicleModel.deepCopy(VehicleModel model) => VehicleModel(
+        id: model.id,
+        status: List.from(
+          model.status,
+        ),
+        plate: model.plate,
+        type: model.type,
       );
 }

@@ -1,10 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:paperopoli_terminal/cubits/operations/operations_cubit.dart';
-import 'package:paperopoli_terminal/data/models/operation/operation_model.dart';
-import 'package:paperopoli_terminal/data/models/operation/operation_status.dart';
-import 'package:paperopoli_terminal/presentation/screens/home_screen.dart';
 
 class OperationsWidget extends StatefulWidget {
   @override
@@ -12,37 +6,6 @@ class OperationsWidget extends StatefulWidget {
 }
 
 class _OperationsWidgetState extends State<OperationsWidget> {
-  @override
-  void initState() {
-    super.initState();
-    SchedulerBinding.instance!.addPostFrameCallback(
-      (timeStamp) => _fetch(),
-    );
-  }
-
-  void _fetch() async => context.read<OperationsCubit>().fetch(
-        user: HomeScreen.of(context)!.getUser(),
-      );
-
-  void _delete(
-    OperationModel operationModel,
-    List<OperationModel> operations,
-  ) {
-    setState(() {
-      operations.remove(
-        operationModel,
-      );
-    });
-  }
-
-  void _changeStatus(
-    OperationModel operationModel,
-    OperationStatus operationStatus,
-  ) {
-    setState(() {
-      operationModel.status.add(operationStatus);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

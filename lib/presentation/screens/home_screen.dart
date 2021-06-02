@@ -8,6 +8,7 @@ import 'package:paperopoli_terminal/cubits/authentication/authentication_cubit.d
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paperopoli_terminal/data/models/category_model.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/goodsWidget.dart';
+import 'package:paperopoli_terminal/presentation/widgets/categories/people_widget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/shipsWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/categories/vehiclesWidget.dart';
 import 'package:paperopoli_terminal/presentation/widgets/creation/create_good_widget.dart';
@@ -163,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'Merci':
         return GoodsWidget();
       case 'Persone':
-        return VehiclesWidget();
+        return PeopleWidget();
       case 'Veicoli':
         return VehiclesWidget();
       default:

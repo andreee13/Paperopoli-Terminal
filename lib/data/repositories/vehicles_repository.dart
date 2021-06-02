@@ -13,7 +13,7 @@ class VehiclesRepository {
   }) async =>
       await http.get(
         Uri.parse(
-          TERMINAL_API_URL,
+          '$TERMINAL_API_URL/vehicles/index',
         ),
         headers: {
           HttpHeaders.authorizationHeader: await user.getIdToken(),
@@ -21,70 +21,18 @@ class VehiclesRepository {
         },
       ).then((response) {
         if (response.statusCode == HttpStatus.ok ||
-            response.statusCode == HttpStatus.notModified) {
-          return jsonDecode(response.body)
-              .map(
-                (item) => VehicleModel.fromJson(item),
-              )
-              .toList<VehicleModel>();
-        } else {
-          throw ServerException();
-        }
-      });
-
-  Future<void> delete({
-    required int id,
-    required User user,
-  }) async =>
-      http.delete(
-        Uri.parse(
-          '$TERMINAL_API_URL/vehicles/delete/$id',
-        ),
-        headers: {
-          HttpHeaders.authorizationHeader: await user.getIdToken(),
-          HttpHeaders.contentTypeHeader: ContentType.json.value,
-        },
-      ).then((response) {
-        if (response.statusCode != HttpStatus.ok) {
-          throw ServerException();
-        }
-      });
-
-  Future<void> edit({
-    required VehicleModel vehicleModel,
-    required User user,
-  }) async =>
-      http.patch(
-        Uri.parse(
-          '$TERMINAL_API_URL/vehicles/edit/${vehicleModel.plate}',
-        ),
-        headers: {
-          HttpHeaders.authorizationHeader: await user.getIdToken(),
-          HttpHeaders.contentTypeHeader: ContentType.json.value,
-        },
-      ).then((response) {
-        if (response.statusCode != HttpStatus.ok) {
-          throw ServerException();
-        }
-      });
-
-  Future<VehicleModel> create({
-    required VehicleModel vehicleModel,
-    required User user,
-  }) async =>
-      http.post(
-        Uri.parse(
-          '$TERMINAL_API_URL/vehicles/create',
-        ),
-        headers: {
-          HttpHeaders.authorizationHeader: await user.getIdToken(),
-          HttpHeaders.contentTypeHeader: ContentType.json.value,
-        },
-      ).then((response) {
-        if (response.statusCode == HttpStatus.ok) {
-          return vehicleModel..plate = response.body;
-        } else {
-          throw ServerException();
-        }
+              response.statusCode == HttpStatus.notModified) {
+            var v = <VehicleModel>[];
+            jsonDecode(response.body).forEach(
+              (String k, value) => v.add(
+                VehicleModel.fromJson(
+                  value,
+                ),
+              ),
+            );
+            return v;
+          } else {
+            throw ServerException();
+          }
       });
 }

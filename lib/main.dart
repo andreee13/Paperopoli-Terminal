@@ -9,11 +9,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paperopoli_terminal/cubits/goods/goods_cubit.dart';
 import 'package:paperopoli_terminal/cubits/operations/operations_cubit.dart';
+import 'package:paperopoli_terminal/cubits/people/people_cubit.dart';
 import 'package:paperopoli_terminal/cubits/ships/ships_cubit.dart';
 import 'package:paperopoli_terminal/cubits/trips/trips_cubit.dart';
 import 'package:paperopoli_terminal/cubits/vehicles/vehicles_cubit.dart';
 import 'package:paperopoli_terminal/data/repositories/goods_repository.dart';
 import 'package:paperopoli_terminal/data/repositories/operations_repository.dart';
+import 'package:paperopoli_terminal/data/repositories/people_repository.dart';
 import 'package:paperopoli_terminal/data/repositories/ships_repository.dart';
 import 'package:paperopoli_terminal/data/repositories/trips_repository.dart';
 import 'package:paperopoli_terminal/data/repositories/vehicles_repository.dart';
@@ -65,6 +67,11 @@ void main() async {
             BlocProvider(
               create: (context) => TripsCubit(
                 repository: TripsRepository(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => PeopleCubit(
+                repository: PeopleRepository(),
               ),
             ),
           ],
