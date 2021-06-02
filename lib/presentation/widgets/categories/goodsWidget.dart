@@ -48,7 +48,7 @@ class _GoodsWidgetState extends State<GoodsWidget> {
     super.dispose();
   }
 
-  Future _fetch() async {
+  Future<void> _fetch() async {
     await context.read<GoodsCubit>().fetch(
           user: HomeScreen.of(context)!.getUser(),
         );
@@ -442,7 +442,7 @@ class _GoodsWidgetState extends State<GoodsWidget> {
                   Ionicons.search,
                   color: Colors.grey.shade400,
                 ),
-                hintText: 'Cerca navi',
+                hintText: 'Cerca merci',
                 contentPadding: const EdgeInsets.fromLTRB(
                   16,
                   16,

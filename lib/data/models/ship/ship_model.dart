@@ -16,7 +16,6 @@ class ShipModel {
   factory ShipModel.fromJson(List json) {
     var v = <ShipStatus>[];
     json.forEach((element) {
-      print(element);
       v.addAll({
         ShipStatus(
           id: element['nave_stato_id'],

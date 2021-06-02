@@ -18,7 +18,6 @@ class PersonModel {
   factory PersonModel.fromJson(List json) {
     var v = <PersonStatus>[];
     json.forEach((element) {
-      print(element);
       v.addAll({
         PersonStatus(
           id: element['persona_stato_id'],

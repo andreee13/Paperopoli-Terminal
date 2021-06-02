@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,7 @@ import 'package:paperopoli_terminal/data/repositories/ships_repository.dart';
 import 'package:paperopoli_terminal/data/repositories/trips_repository.dart';
 import 'package:paperopoli_terminal/data/repositories/vehicles_repository.dart';
 
+import 'core/utils/constants.dart';
 import 'core/utils/themes/default_theme.dart';
 import 'cubits/authentication/authentication_cubit.dart';
 import 'data/repositories/user_repository.dart';
@@ -32,6 +34,7 @@ void main() async {
   await Firebase.initializeApp();
   //FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   await _initializeDeviceProperties();
+  _initializeFirebaseMessaging();
   runZonedGuarded(
     () {
       runApp(
@@ -92,6 +95,23 @@ Future<void> _initializeDeviceProperties() async {
     ),
   );
 }
+
+void _initializeFirebaseMessaging() {
+  if (IS_WEB) {
+    FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      announcement: true,
+      badge: true,
+      criticalAlert: true,
+      sound: true,
+    );
+  }
+  FirebaseMessaging.onBackgroundMessage(
+    _manageNotification,
+  );
+}
+
+Future<void> _manageNotification(RemoteMessage msg) async => {};
 
 class AppBootstrapper extends StatefulWidget {
   @override

@@ -443,7 +443,7 @@ class _VehiclesWidgetState extends State<VehiclesWidget> {
                   Ionicons.search,
                   color: Colors.grey.shade400,
                 ),
-                hintText: 'Cerca navi',
+                hintText: 'Cerca veicoli',
                 contentPadding: const EdgeInsets.fromLTRB(
                   16,
                   16,

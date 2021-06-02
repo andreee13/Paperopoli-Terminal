@@ -275,11 +275,12 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
           onPressed: () => setState(
-            () => _inCreatingMode = true,
+            () => _inCreatingMode = !_inCreatingMode,
           ),
-          backgroundColor: Color(0xff5564E8),
+          backgroundColor: _inCreatingMode ? Colors.red.withOpacity(0.9) : Color(0xff5564E8),
           child: Icon(
-            Icons.add,
+            _inCreatingMode ? Icons.close : Icons.add,
+            color: Colors.white,
           ),
         ),
         body: Row(

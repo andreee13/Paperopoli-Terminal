@@ -14,11 +14,12 @@ dependencies:
   cupertino_icons: ^1.0.3
   http: ^0.13.3
   ionicons: ^0.1.2
-  firebase_auth: ^1.0.3
-  firebase_crashlytics: ^2.0.0
-  firebase_core: ^1.0.3
+  firebase_auth: ^1.2.0
+  firebase_crashlytics: ^2.0.4
+  firebase_core: ^1.2.0
+  firebase_messaging: ^10.0.0
   bloc: ^7.0.0
-  flutter_bloc: ^7.0.0
+  flutter_bloc: ^7.0.1
   timelines: ^0.1.0
   collection: ^1.15.0
   flutter_calendar_carousel: ^2.0.1

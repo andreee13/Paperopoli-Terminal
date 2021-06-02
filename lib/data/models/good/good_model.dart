@@ -16,7 +16,6 @@ class GoodModel {
   factory GoodModel.fromJson(List json) {
     var v = <GoodStatus>[];
     json.forEach((element) {
-      print(element);
       v.addAll({
         GoodStatus(
           id: element['merce_stato_id'],

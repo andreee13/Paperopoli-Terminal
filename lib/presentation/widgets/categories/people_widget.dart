@@ -463,7 +463,7 @@ class _PeopleWidgetState extends State<PeopleWidget> {
                   Ionicons.search,
                   color: Colors.grey.shade400,
                 ),
-                hintText: 'Cerca navi',
+                hintText: 'Cerca persone',
                 contentPadding: const EdgeInsets.fromLTRB(
                   16,
                   16,

@@ -18,7 +18,6 @@ class VehicleModel {
   factory VehicleModel.fromJson(List json) {
     var v = <VehicleStatus>[];
     json.forEach((element) {
-      print(element);
       v.addAll({
         VehicleStatus(
           id: element['veicolo_stato_id'],

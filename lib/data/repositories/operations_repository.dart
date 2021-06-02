@@ -23,7 +23,6 @@ class OperationsRepository {
         (response) {
           if (response.statusCode == HttpStatus.ok ||
               response.statusCode == HttpStatus.notModified) {
-            print(response.body);
             return jsonDecode(
               response.body,
             )
