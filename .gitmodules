@@ -1,3 +1,6 @@
 [submodule "paperopoli-terminal-web-app"]
 	path = paperopoli-terminal-web-app
 	url = https://gitlab.com/andre_13/paperopoli-terminal-web-app.git
+[submodule "paperopoli-terminal-server"]
+	path = paperopoli-terminal-server
+	url = https://gitlab.com/andre_13/paperopoli-terminal-server.git
