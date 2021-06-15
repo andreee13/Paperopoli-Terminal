@@ -4,3 +4,6 @@
 [submodule "paperopoli-terminal-server"]
 	path = paperopoli-terminal-server
 	url = https://gitlab.com/andre_13/paperopoli-terminal-server.git
+[submodule "paperopoli-terminal-ws"]
+	path = paperopoli-terminal-ws
+	url = https://gitlab.com/andre_13/paperopoli-terminal-ws.git
